@@ -18,13 +18,11 @@
 </style>
 
 <script lang="ts">
-
 import { store } from "../stores/counter";
 
 export default {
   data() {
-    return { st: store }
-  }
-}
-
+    return { st: store };
+  },
+};
 </script>

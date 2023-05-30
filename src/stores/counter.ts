@@ -11,13 +11,12 @@
 //   return { count, doubleCount, increment };
 // });
 
-
-import { reactive } from 'vue'
+import { reactive } from "vue";
 
 export const store = reactive({
   count: 0,
 
   increment() {
-    this.count++
-  }
+    this.count++;
+  },
 });
