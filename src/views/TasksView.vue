@@ -1,17 +1,9 @@
-<template>
-  <!-- make this button work -->
-  <button @click="incr">count is: {{ count }}</button>
-  <input type="range" min="0" max="10" v-model="count" />
-
-  <div v-if="tasks">We have the tasks!</div>
-  <div v-else>Loading...</div>
-</template>
-
 <script lang="ts">
-import { getTasks, type Task } from "@/api";
+import { getTasks, type Task as TaskT } from "@/api";
+import Task from "../components/Task.vue";
 
 interface Model {
-  tasks: Task[] | null;
+  tasks: TaskT[] | null;
   count: number;
 }
 
@@ -32,5 +24,22 @@ export default {
       this.tasks = tasks;
     });
   },
+  components: {
+    Task,
+  },
 };
 </script>
+
+<template>
+  <button @click="incr">count is: {{ count }}</button>
+  <input type="range" min="0" max="10" v-model="count" />
+
+  <div v-if="tasks">
+    We have the tasks!
+
+    <div v-for="task in tasks">
+      <Task :task="task" />
+    </div>
+  </div>
+  <div v-else>Loading...</div>
+</template>
