@@ -1,6 +1,18 @@
+import pprint
 import flask
+from flask_sqlalchemy import SQLAlchemy
+import sqlalchemy as sa
 
+db = SQLAlchemy()
 app = flask.Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+db.init_app(app)
+
+
+class Task(db.Model):
+    id = sa.Column(sa.Integer, primary_key=True)
+    title = sa.Column(sa.String, nullable=False)
+    created = sa.Column(sa.DateTime, server_default=sa.func.now())
 
 
 def json_responce(payload, status=200):
@@ -11,10 +23,21 @@ def json_responce(payload, status=200):
     r.headers["Access-Control-Allow-Origin"] = "*"
     return r
 
+
 @app.route("/")
 def hello():
     return "Hello, World!"
 
+
 @app.route("/tasks")
 def tasks():
-    return json_responce([{"name": "Clean your room"}, {"name": "Take out the trash"}])
+    tasks = db.session.execute(db.select(Task).order_by(Task.created)).scalars().all()
+
+    pprint.pprint(tasks)
+
+    l = []
+    for t in tasks:
+        l.append({"id": t.id, "name": t.title, "created": t.created})
+    # pprint.pprint(l)
+
+    return json_responce(l)
