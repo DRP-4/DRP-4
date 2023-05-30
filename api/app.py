@@ -32,12 +32,4 @@ def hello():
 @app.route("/tasks")
 def tasks():
     tasks = db.session.execute(db.select(Task).order_by(Task.created)).scalars().all()
-
-    pprint.pprint(tasks)
-
-    l = []
-    for t in tasks:
-        l.append({"id": t.id, "name": t.title, "created": t.created})
-    # pprint.pprint(l)
-
-    return json_responce(l)
+    return json_responce([{"name": t.title} for t in tasks])
