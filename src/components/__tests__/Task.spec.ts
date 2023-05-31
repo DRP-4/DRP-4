@@ -5,9 +5,8 @@ import Task from "../Task.vue";
 
 describe("HelloWorld", () => {
   it("renders properly", () => {
-
     const task = {
-      name: "Do your work"
+      name: "Do your work",
     };
 
     const wrapper = mount(Task, { props: { task } });
