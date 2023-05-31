@@ -14,6 +14,6 @@ export default {
 
 <template>
   <div>
-    <h1>Here's a task for you: {{ task.name }}</h1>
+    <p>Here's a task for you: {{ task.name }}</p>
   </div>
 </template>

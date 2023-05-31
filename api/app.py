@@ -32,4 +32,7 @@ def hello():
 @app.route("/tasks")
 def tasks():
     tasks = db.session.execute(db.select(Task).order_by(Task.created)).scalars().all()
-    return json_responce([{"name": t.title} for t in tasks])
+    return json_responce([{"name": t.title, "id": t.id} for t in tasks])
+
+chats = []
+

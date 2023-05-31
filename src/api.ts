@@ -4,6 +4,7 @@ const API_BASE = import.meta.env.DEV
 
 export interface Task {
   name: string;
+  id: number;
 }
 
 export async function getTasks(): Promise<Task[]> {

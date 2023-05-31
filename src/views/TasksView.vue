@@ -1,9 +1,9 @@
 <script lang="ts">
-import { getTasks, type Task as TaskT } from "@/api";
-import Task from "../components/Task.vue";
+import { getTasks, type Task as Task } from "@/api";
+import TaskItem from "../components/TaskItem.vue";
 
 interface Model {
-  tasks: TaskT[] | null;
+  tasks: Task[] | null;
   count: number;
 }
 
@@ -24,9 +24,7 @@ export default {
       this.tasks = tasks;
     });
   },
-  components: {
-    Task,
-  },
+  components: { TaskItem },
 };
 </script>
 
@@ -37,8 +35,8 @@ export default {
   <div v-if="tasks">
     We have the tasks!
 
-    <div v-for="task in tasks">
-      <Task :task="task" />
+    <div v-for="task in tasks" :key="task.id">
+      <TaskItem :task="task" />
     </div>
   </div>
   <div v-else>Loading...</div>
