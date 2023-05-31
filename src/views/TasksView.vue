@@ -8,29 +8,29 @@ interface Model {
 }
 
 export default {
+  components: { TaskItem },
   data(): Model {
     return {
       count: 0,
       tasks: null,
     };
   },
-  methods: {
-    incr() {
-      this.count++;
-    },
-  },
   mounted() {
     getTasks().then((tasks) => {
       this.tasks = tasks;
     });
   },
-  components: { TaskItem },
+  methods: {
+    incr() {
+      this.count++;
+    },
+  },
 };
 </script>
 
 <template>
   <button @click="incr">count is: {{ count }}</button>
-  <input type="range" min="0" max="10" v-model="count" />
+  <input v-model="count" type="range" min="0" max="10" />
 
   <div v-if="tasks">
     We have the tasks!

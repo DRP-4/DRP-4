@@ -7,16 +7,6 @@
   </div>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
-
 <script lang="ts">
 import { store } from "../stores/counter";
 
@@ -26,3 +16,13 @@ export default {
   },
 };
 </script>
+
+<style>
+@media (min-width: 1024px) {
+  .about {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+}
+</style>
