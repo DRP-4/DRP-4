@@ -28,7 +28,9 @@ jobs:
       - run: npm run build
       - run: npm run test:unit
       - run: npm run test:e2e
-      - run: npm run format -- --check
+      - run: npm run format
+      - run: npm run lint
+      - run: git diff --exit-code
   test-e2e: # Installing e2e deps is the long poll, so only run e2e
     runs-on: ubuntu-22.04
     strategy:
