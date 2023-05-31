@@ -15,7 +15,7 @@ class Task(db.Model):
     created = sa.Column(sa.DateTime, server_default=sa.func.now())
 
 
-def json_responce(payload, status=200):
+def json_response(payload, status=200):
     r = flask.Response(flask.json.dumps(payload))
     r.headers["Content-Type"] = "application/json"
     r.status_code = status
@@ -32,7 +32,7 @@ def hello():
 @app.route("/tasks")
 def tasks():
     tasks = db.session.execute(db.select(Task).order_by(Task.created)).scalars().all()
-    return json_responce([{"name": t.title, "id": t.id} for t in tasks])
+    return json_response([{"name": t.title, "id": t.id} for t in tasks])
 
 chats = []
 
