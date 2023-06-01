@@ -9,7 +9,10 @@ import os
 
 db = SQLAlchemy()
 app = flask.Flask(__name__, static_folder="/www", static_url_path="/")
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+# https://stackoverflow.com/a/66794960
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL").replace(
+    "postgres://", "postgresql://"
+)
 db.init_app(app)
 # This let's all origins access the API, which is probably fine for us.
 CORS(app)
