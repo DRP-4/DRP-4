@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy as sa
 
 db = SQLAlchemy()
-app = flask.Flask(__name__)
+app = flask.Flask(__name__, static_folder="/www", static_url_path="/")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db.init_app(app)
 
@@ -25,8 +25,8 @@ def json_response(payload, status=200):
 
 
 @app.route("/")
-def hello():
-    return "Hello, World!"
+def index():
+    return flask.send_file("www/index.html")
 
 
 @app.route("/tasks")
