@@ -31,8 +31,11 @@ def hello():
 
 @app.route("/api/tasks")
 def tasks():
-    tasks = db.session.execute(db.select(Task).order_by(Task.created)).scalars().all()
-    return json_response([{"name": t.title, "id": t.id} for t in tasks])
+    # tasks = db.session.execute(db.select(Task).order_by(Task.created)).scalars().all()
+    # return json_response([{"name": t.title, "id": t.id} for t in tasks])
+
+    tasks = [{"name": "Task 1", "id": 1}, {"name": "Task 2", "id": 2}]
+    return json_response(tasks)
 
 
 chats = []
