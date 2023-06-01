@@ -29,11 +29,8 @@ export default {
 </script>
 
 <template>
-  <button @click="incr">count is: {{ count }}</button>
-  <input v-model="count" type="range" min="0" max="10" />
-
   <div v-if="tasks">
-    We have the tasks!
+    <h2>We have the tasks!</h2>
 
     <div v-for="task in tasks" :key="task.id">
       <TaskItem :task="task" />
