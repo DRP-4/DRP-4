@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import TheWelcome from "../components/TheWelcome.vue";
+import CounterClicker from "../components/CounterClicker.vue";
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <CounterClicker />
   </main>
 </template>
