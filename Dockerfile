@@ -1,5 +1,5 @@
 FROM alpine:latest
-RUN apk add --no-cache npm python3 py3-pip postgresql15-client
+RUN apk add --no-cache npm python3-dev py3-pip libpq-dev build-base
 WORKDIR /app
 COPY api/requirements.txt api/requirements.txt
 RUN pip3 install -r api/requirements.txt
