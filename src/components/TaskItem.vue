@@ -13,7 +13,7 @@ export default {
 </script>
 
 <template>
-  <div>
-    <p>Here's a task for you: {{ task.name }}</p>
-  </div>
+  <li>
+    {{ task.name }}
+  </li>
 </template>
