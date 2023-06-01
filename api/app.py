@@ -26,7 +26,7 @@ def json_response(payload, status=200):
 
 @app.route("/")
 def index():
-    return flask.send_file("www/index.html")
+    return flask.send_file("/www/index.html")
 
 
 @app.route("/tasks")
