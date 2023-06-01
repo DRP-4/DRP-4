@@ -6,7 +6,7 @@ export default {
   props: {
     task: {
       type: Object as PropType<Task>,
-      required: true
+      required: true,
     },
   },
 };
