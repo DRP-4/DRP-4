@@ -29,10 +29,10 @@ def index():
     return flask.send_file("/www/index.html")
 
 
-@app.route("/tasks")
+@app.route("/api/tasks")
 def tasks():
     tasks = db.session.execute(db.select(Task).order_by(Task.created)).scalars().all()
     return json_response([{"name": t.title, "id": t.id} for t in tasks])
 
-chats = []
 
+chats = []
