@@ -23,7 +23,7 @@ export default {
       const task = { name: this.new_task };
       addTask(task).then(() => {
         this.fetchTasks();
-      })
+      });
     },
 
     fetchTasks() {
