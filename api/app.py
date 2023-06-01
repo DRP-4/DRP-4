@@ -4,11 +4,12 @@ import flask
 from flask_sqlalchemy import SQLAlchemy
 import sqlalchemy as sa
 from flask_cors import CORS
+import os
 
 
 db = SQLAlchemy()
 app = flask.Flask(__name__, static_folder="/www", static_url_path="/")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 db.init_app(app)
 # This let's all origins access the API, which is probably fine for us.
 CORS(app)
