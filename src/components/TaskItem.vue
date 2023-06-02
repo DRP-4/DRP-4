@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Task } from "@/api";
+import type { Task } from "@/api/tasks";
 import type { PropType } from "vue";
 
 export default {
