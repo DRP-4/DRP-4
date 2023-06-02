@@ -2,6 +2,5 @@
 </script>
 
 <template>
-  <main>
-  </main>
+  <main></main>
 </template>
