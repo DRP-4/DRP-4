@@ -1,16 +1,19 @@
 import flask
 from flask_cors import CORS
-import os
+from importlib import import_module
+from os import environ, listdir
 
 from models import db
 from models.task import Task
 
+running_as_dev = 'DEV' in environ
+
 # Create flask app instance
 app = flask.Flask(__name__, static_folder="/www", static_url_path="/")
 
-# Work around deprecated "postgres://" dialect in the 
+# Work around deprecated "postgres://" dialect in the
 # https://stackoverflow.com/a/66794960
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL").replace(
+app.config["SQLALCHEMY_DATABASE_URI"] = environ["DATABASE_URL"].replace(
     "postgres://", "postgresql://"
 )
 
@@ -20,5 +23,16 @@ db.init_app(app)
 # This let's all origins access the API, which is probably fine for us.
 CORS(app)
 
-import routes.index
-import routes.tasks
+
+@app.after_request
+def allow_creds(response):
+    if running_as_dev:
+        # We shouldn't need this if we are running on the same domain
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+    return response
+
+
+# Load routes
+for route in listdir("routes"):
+    if route.endswith(".py"):
+        import_module(f"routes.{route.removesuffix('.py')}")
