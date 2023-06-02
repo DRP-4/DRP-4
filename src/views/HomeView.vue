@@ -1,5 +1,4 @@
 <script lang="ts">
-import CounterClicker from "../components/CounterClicker.vue";
 import type { Task } from "@/api";
 
 interface Data {
@@ -9,7 +8,6 @@ interface Data {
 }
 
 export default {
-  components: { CounterClicker },
   data(): Data {
     return {
       duration: 30,
@@ -80,7 +78,7 @@ export default {
     </ol>
     <div v-else>No Task Yet!</div>
 
-    <input type="text" placeholder="What needs doing?" v-model="pendingTask" />
+    <input v-model="pendingTask" type="text" placeholder="What needs doing?" />
 
     <button :disabled="!pendingTask" @click="addTask()">Add task</button>
 
