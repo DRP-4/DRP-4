@@ -1,5 +1,5 @@
 <script lang="ts">
-import { getTasks, type Task, addTask } from "@/api";
+import { getTasks, type Task, addTask } from "@/api/tasks";
 import TaskItem from "../components/TaskItem.vue";
 
 interface Model {
