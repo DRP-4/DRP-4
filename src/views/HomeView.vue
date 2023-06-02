@@ -3,6 +3,5 @@
 
 <template>
   <main>
-
   </main>
 </template>
