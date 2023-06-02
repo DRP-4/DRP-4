@@ -49,10 +49,38 @@ export default {
   }
 };
 </script>
-
 <template>
   <main>
-    <CounterClicker />
+    <input v-model="duration" class="timeslider" type="range" min="5" max="120" step="5" list="tickmarks">
+
+    <datalist id="tickmarks">
+      <option value="5"></option>
+      <option value="15"></option>
+      <option value="30"></option>
+      <option value="60"></option>
+      <option value="120"></option>
+    </datalist>
+
+    {{ durationHumanized }}
+
+
+    <ol v-if="tasks.length">
+      Thinks to study:
+      <li v-for="task in tasks" :key="task.id">
+        {{ task.name }}
+      </li>
+    </ol>
+    <div v-else>No Task Yet!</div>
+
+
+    <input type="text" placeholder="What needs doing?" v-model="pendingTask" />
+
+    <button :disabled="!pendingTask" @click="addTask()">Add task</button>
+
+    <p class="startwrap">
+      <button class="start">Start Now!</button>
+    </p>
+
   </main>
 </template>
 
