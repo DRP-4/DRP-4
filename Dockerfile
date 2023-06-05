@@ -6,10 +6,10 @@ RUN adduser -D npc
 USER npc
 RUN mkdir /home/npc/app
 WORKDIR /home/npc/app
-ENV PATH="${PATH}:/home/npc/.local/bin"
+ENV PATH="/home/npc/.local/bin:${PATH}"
 # Install python backend dependencies
 COPY --chown=npc api/requirements.txt api/requirements.txt
-RUN python -m pip install -r api/requirements.txt
+RUN pip3 install --user -r api/requirements.txt
 # Install frontend dependencies
 COPY --chown=npc package.json package-lock.json ./
 RUN npm install
@@ -19,4 +19,4 @@ COPY --chown=npc . .
 RUN npm run build
 # Start the server
 WORKDIR /home/npc/app/api
-CMD ["/bin/sh", "-c", "python -m flask run --host=0.0.0.0 --port=$PORT"]
+CMD ["/bin/sh", "-c", "flask run --host=0.0.0.0 --port=$PORT"]
