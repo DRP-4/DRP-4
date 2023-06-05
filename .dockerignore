@@ -1,3 +1,5 @@
+# These entries are copied from the top level .gitignore
+
 # Logs
 logs
 *.log
@@ -30,7 +32,15 @@ coverage
 test-results/
 playwright-report/
 
+# Backend stuff
+api/instance
+**/__pycache__/
+api/venv
+api/.env
+
 # .dockerignore specific stuff
 .github/
 .git/
 Dockerfile
+README.md
+api/README.md
