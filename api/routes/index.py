@@ -1,7 +1,7 @@
-from app import app, static_folder
+from app import app
 import flask
 
 
 @app.route("/")
 def index():
-    return flask.send_file(f"{static_folder}/index.html")
+    return flask.send_file("/www/index.html")
