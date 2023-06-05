@@ -15,10 +15,10 @@ describe("HelloWorld", () => {
   });
 
   it("Knows about math", () => {
-    let x = 2;
+    let x = 3;
 
     x += 2;
 
-    expect(x).toBe(4);
+    expect(x).toBe(5);
   });
 });
