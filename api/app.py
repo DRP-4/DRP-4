@@ -24,6 +24,15 @@ db.init_app(app)
 CORS(app)
 
 
+# Upgrade all HTTP requests to HTTPS
+@app.before_request
+def upgrade_http():
+    r = flask.request
+    if (not running_as_dev) and (r.headers["X-Forwarded-Proto"] == "http"):
+        url = r.url.replace("http://", "https://", 1)
+        return redirect(url, code=301)  # Permenant redirect
+
+
 @app.after_request
 def allow_creds(response):
     if running_as_dev:
