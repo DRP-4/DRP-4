@@ -1,7 +1,7 @@
 FROM alpine:latest
 # Install the (non-python) dependencies
 RUN apk add --no-cache npm python3-dev py3-pip libpq-dev build-base
-# Setup the user `npc` with BASH as the main shell
+# Setup the user `npc` for the server
 RUN adduser -D npc
 USER npc
 RUN mkdir /home/npc/app
