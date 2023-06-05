@@ -19,4 +19,4 @@ COPY --chown=npc . .
 RUN npm run build
 # Start the server
 WORKDIR /home/npc/app/api
-CMD ["/bin/sh", "-c", "python -m flask run --host=0.0.0.0 --port=$PORT"]
+CMD ["/bin/sh", "-c", "flask run --host=0.0.0.0 --port=$PORT"]

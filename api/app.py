@@ -6,6 +6,7 @@ from os import environ, listdir
 from models import db
 
 running_as_dev = "DEV" in environ
+static_folder = '../dist'
 
 # Add checks to ensure we've set the right env vars
 if "DATABASE_URL" not in environ:
