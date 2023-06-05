@@ -1,4 +1,5 @@
-from app import app, db, Task
+from app import app, db
+from models.task import Task
 
 
 with app.app_context():
