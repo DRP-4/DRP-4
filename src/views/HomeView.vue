@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Task } from "@/api";
+import type { Task } from "@/api/tasks";
 
 interface Data {
   duration: number; // DOM fuckery means this can also be string
