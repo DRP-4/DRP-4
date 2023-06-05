@@ -3,7 +3,7 @@ from flask import request
 from app import running_as_dev
 
 # SameSite parameter for the SetCookie header. Should be strict if frontend and API run off one domain
-samesite = 'None' if running_as_dev else 'Strict'
+samesite = "None" if running_as_dev else "Strict"
 
 _cookies_user_id_key: str = "user_id"
 
@@ -24,8 +24,9 @@ def with_user_id(func):
 
         res = func(id)
         if set_cookie:
-            res.set_cookie(_cookies_user_id_key, str(
-                id), samesite=samesite, secure=True)
+            res.set_cookie(
+                _cookies_user_id_key, str(id), samesite=samesite, secure=True
+            )
 
         return res
 

@@ -10,8 +10,7 @@ from sqlalchemy.dialects import postgresql
 @app.route("/api/tasks", methods=["GET"])
 @with_user_id
 def get_tasks(user_id):
-    query = db.select(Task).filter(
-        Task.user_id == user_id).order_by(Task.created)
+    query = db.select(Task).filter(Task.user_id == user_id).order_by(Task.created)
     tasks = db.session.execute(query).scalars().all()
     return json_response([{"name": t.title, "id": t.id} for t in tasks])
 
