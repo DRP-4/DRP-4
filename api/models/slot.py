@@ -3,10 +3,10 @@ from sqlalchemy_utils import UUIDType
 from models import db
 
 
-class Task(db.Model):
-    task_id = Column(Integer, primary_key=True)
+class Slot(db.Model):
+    slot_id = Column(Integer, primary_key=True)
     user_id = Column(
         UUIDType(binary=True), ForeignKey("session.user_id"), nullable=False
     )
-    title = Column(String, nullable=False)
-    created = Column(DateTime, server_default=func.now())
+    start = Column(DateTime, nullable=False)
+    end = Column(DateTime, nullable=False)
