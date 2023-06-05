@@ -18,7 +18,6 @@ def with_user_id(func):
         id = None
         if _cookies_user_id_key in request.cookies:
             id = UUID(request.cookies[_cookies_user_id_key])
-            print(f'reused cookie {id}')
         else:
             id = new_user_id()
             set_cookie = True
