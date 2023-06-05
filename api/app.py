@@ -5,8 +5,12 @@ from os import environ, listdir
 
 from models import db
 
-running_as_dev = 'DEV' in environ
-static_folder = '../dist'
+running_as_dev = "DEV" in environ
+
+# Add checks to ensure we've set the right env vars
+if "DATABASE_URL" not in environ:
+    print("DATABASE_URL environment variable not set!!")
+    exit(-1)
 
 # Create flask app instance
 app = flask.Flask(__name__, static_folder=static_folder, static_url_path="/")
@@ -22,6 +26,15 @@ db.init_app(app)
 
 # This let's all origins access the API, which is probably fine for us.
 CORS(app)
+
+
+# Upgrade all HTTP requests to HTTPS
+@app.before_request
+def upgrade_http():
+    r = flask.request
+    if (not running_as_dev) and (r.headers["X-Forwarded-Proto"] == "http"):
+        url = r.url.replace("http://", "https://", 1)
+        return flask.redirect(url, code=301)  # Permenant redirect
 
 
 @app.after_request

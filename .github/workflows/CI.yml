@@ -52,3 +52,13 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+  test-python:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r api/requirements-dev.txt
+      - run: black api/ --check

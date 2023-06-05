@@ -22,7 +22,7 @@ flask run --debug
 
 This also has HRM
 
-## Prod DB Migration
+## Prod DB Init
 
 Setup `.env`
 
@@ -37,6 +37,12 @@ source .env
 python3 ./create_db.py
 ```
 
-This may change if we need to do more complex migrations. It's probably easier to just to drop the tables.
-
 You can do this with `psql $DATABASE_URL`, but don't do this on lab machines, as it'll leak the password :)
+
+## Prod DB """Migrations"""
+
+1. Setup `$DATABASE_URL`
+2. `psql $DATABASE_URL`
+3. Run `\dt` to get tables.
+4. Drop all the tables (eg `DROP TABLE task;`)
+5. Run `./create_db.py`
