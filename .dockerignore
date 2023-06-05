@@ -30,4 +30,7 @@ coverage
 test-results/
 playwright-report/
 
-api/.env/
+# .dockerignore specific stuff
+.github/
+.git/
+Dockerfile
