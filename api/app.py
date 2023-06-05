@@ -4,17 +4,16 @@ from importlib import import_module
 from os import environ, listdir
 
 from models import db
-from models.task import Task
 
 running_as_dev = "DEV" in environ
 
 # Add checks to ensure we've set the right env vars
-if environ.get("DATABASE_URL") == None:
+if "DATABASE_URL" not in environ:
     print("DATABASE_URL environment variable not set!!")
     exit(-1)
 
 # Create flask app instance
-app = flask.Flask(__name__, static_folder="/www", static_url_path="/")
+app = flask.Flask(__name__, static_folder=static_folder, static_url_path="/")
 
 # Work around deprecated "postgres://" dialect in the
 # https://stackoverflow.com/a/66794960

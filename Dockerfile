@@ -1,12 +1,22 @@
 FROM alpine:latest
+# Install the (non-python) dependencies
 RUN apk add --no-cache npm python3-dev py3-pip libpq-dev build-base
-WORKDIR /app
-COPY api/requirements.txt api/requirements.txt
+# Setup the user `npc` for the server
+RUN adduser -D npc
+USER npc
+RUN mkdir /home/npc/app
+WORKDIR /home/npc/app
+ENV PATH="${PATH}:/home/npc/.local/bin"
+# Install python backend dependencies
+COPY --chown=npc api/requirements.txt api/requirements.txt
 RUN pip3 install -r api/requirements.txt
-COPY package.json package-lock.json ./
+# Install frontend dependencies
+COPY --chown=npc package.json package-lock.json ./
 RUN npm install
-COPY . .
+# Copy the source over (subject to .dockerignore and api/.dockerignore)
+COPY --chown=npc . .
+# Build the frontend
 RUN npm run build
-RUN mv dist /www
-WORKDIR /app/api
+# Start the server
+WORKDIR /home/npc/app/api
 CMD ["/bin/sh", "-c", "python -m flask run --host=0.0.0.0 --port=$PORT"]
