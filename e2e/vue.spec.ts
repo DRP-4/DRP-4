@@ -6,6 +6,6 @@ test("visits the app root url", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("input[type=text]")).toHaveAttribute(
     "placeholder",
-    "What needs doing?"
+    "New task..."
   );
 });
