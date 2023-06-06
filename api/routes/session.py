@@ -39,6 +39,24 @@ def start_session(user_id):
         )
         db.session.add(task)
 
+    # slot calculation algorithm
+    # for now, just add 45-min slots followed by 15-min breaks
+    # TODO: add only the first, then dynamically calculate as time goes one
+    curr = start
+    minute = datetime.timedelta(seconds=60)
+    work_slot = 45 * minute
+    break_slot = 15 * minute
+    working_slot = True
+    while curr != end:
+        # add a new work/break slot that is upto 45/15 mins long
+        slot_end = min(end, curr + (work_slot if working_slot else break_slot))
+        db.session.add(
+            Slot(user_id=user_id, work=working_slot, start=curr, end=slot_end)
+        )
+        curr = slot_end
+        # if we were working, now on break, and vice-versa
+        working_slot = not working_slot
+
     db.session.commit()
 
     return json_response(body)
