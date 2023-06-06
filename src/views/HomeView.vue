@@ -71,7 +71,7 @@ export default {
     {{ durationHumanized }}
 
     <ol v-if="tasks.length">
-      Thinks to study:
+      Things to study:
       <li v-for="task in tasks" :key="task.id">
         {{ task.name }}
       </li>
