@@ -81,7 +81,7 @@ export default {
 
             <!-- Place in form so focusing on the input binds enter to the button -->
             <li class="list-group-item">
-              <form class="row">
+              <form class="row" @submit.prevent>
                 <div class="col-auto">
                   <input
                     v-model="pendingTask"
