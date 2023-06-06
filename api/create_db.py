@@ -1,5 +1,5 @@
 from app import app, db
-from models.session import Session
+from models.current_session import CurrentSession
 from models.slot import Slot
 from models.task import Task
 
