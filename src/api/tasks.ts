@@ -1,4 +1,4 @@
-import { get, post } from "@/api";
+import { post } from "@/api";
 
 export interface Task {
   name: string;
@@ -11,10 +11,6 @@ export interface CreateTask {
   // by postgres
 }
 
-export async function getTasks(): Promise<Task[]> {
-  return get("tasks");
-}
-
-export async function addTask(task: CreateTask) {
-  return post("tasks", task);
+export async function startSession(tasks: string[], duration: number) {
+  return post("startSession", { tasks, duration });
 }
