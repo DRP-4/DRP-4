@@ -93,8 +93,8 @@ export default {
                 <div class="col-auto">
                   <button
                     :disabled="!pendingTask"
-                    @click="addTask()"
                     class="btn btn-primary"
+                    @click="addTask()"
                   >
                     Add task
                   </button>
