@@ -1,4 +1,6 @@
 <script lang="ts">
+import { RouterLink } from "vue-router";
+
 import type { Task } from "@/api/tasks";
 import * as api from "@/api/tasks";
 
@@ -9,6 +11,7 @@ interface Data {
 }
 
 export default {
+  components: { RouterLink },
   data(): Data {
     return {
       duration: "60",
@@ -35,6 +38,9 @@ export default {
         }
       }
     },
+    hasTasks(): boolean {
+      return this.tasks.length != 0;
+    },
   },
   methods: {
     addTask() {
@@ -46,10 +52,12 @@ export default {
       this.pendingTask = "";
     },
     newSession() {
-      api.newSession(
-        this.tasks.map((t) => t.name),
-        parseInt(this.duration)
-      );
+      // api.newSession(
+      //   this.tasks.map((t) => t.name),
+      //   parseInt(this.duration)
+      // );
+
+      this.$router.push("/session");
     },
   },
 };
@@ -106,10 +114,15 @@ export default {
 
         <div class="d-flex">
           <button
+            v-if="hasTasks"
             class="btn btn-outline-success btn-lg mx-auto"
             @click="newSession()"
           >
             Start Session!
+          </button>
+
+          <button v-else disabled="true" class="btn btn-lg mx-auto">
+            Add some tasks!
           </button>
         </div>
       </div>
