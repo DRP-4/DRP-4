@@ -11,6 +11,6 @@ export interface CreateTask {
   // by postgres
 }
 
-export async function startSession(tasks: string[], duration: number) {
-  return post("startSession", { tasks, duration });
+export async function newSession(tasks: string[], duration: number) {
+  return post("new-session", { tasks, duration });
 }

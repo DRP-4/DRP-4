@@ -45,8 +45,8 @@ export default {
       this.tasks.push(task);
       this.pendingTask = "";
     },
-    startSession() {
-      api.startSession(
+    newSession() {
+      api.newSession(
         this.tasks.map((t) => t.name),
         parseInt(this.duration)
       );
@@ -96,7 +96,7 @@ export default {
       </form>
 
       <p class="startwrap">
-        <button class="start" @click="startSession()">Start Now!</button>
+        <button class="start" @click="newSession()">Start Now!</button>
       </p>
     </main>
   </div>
