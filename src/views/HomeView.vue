@@ -11,7 +11,7 @@ interface Data {
 export default {
   data(): Data {
     return {
-      duration: "30",
+      duration: "60",
       pendingTask: "",
       tasks: [],
     };
@@ -55,76 +55,64 @@ export default {
 };
 </script>
 <template>
-  <div class="d-flex vh-100">
-    <main class="m-auto">
-      <input
-        v-model="duration"
-        class="timeslider"
-        type="range"
-        min="5"
-        max="120"
-        step="5"
-        list="tickmarks"
-      />
+  <div class="vh-100 d-flex align-items-center">
+    <div class="card m-auto" style="width: 30rem">
+      <div class="card-body">
+        <div class="mb-3">
+          <label for="duration" class="form-label"
+            >Session Duration: {{ durationHumanized }}</label
+          >
+          <input
+            v-model="duration"
+            class="form-range"
+            type="range"
+            min="20"
+            max="300"
+            step="5"
+          />
+        </div>
 
-      <datalist id="tickmarks">
-        <option value="5"></option>
-        <option value="15"></option>
-        <option value="30"></option>
-        <option value="60"></option>
-        <option value="120"></option>
-      </datalist>
+        <div class="card mb-5">
+          <div class="card-header">Tasks</div>
+          <ul class="list-group list-group-flush">
+            <li v-for="task in tasks" :key="task.id" class="list-group-item">
+              {{ task.name }}
+            </li>
 
-      {{ durationHumanized }}
+            <!-- Place in form so focusing on the input binds enter to the button -->
+            <li class="list-group-item">
+              <form class="row">
+                <div class="col-auto">
+                  <input
+                    v-model="pendingTask"
+                    class="form-control"
+                    type="text"
+                    placeholder="New task..."
+                  />
+                </div>
+                <div class="col-auto">
+                  <button
+                    :disabled="!pendingTask"
+                    class="btn btn-primary"
+                    @click="addTask()"
+                  >
+                    Add task
+                  </button>
+                </div>
+              </form>
+            </li>
+          </ul>
+        </div>
 
-      <ol v-if="tasks.length">
-        Things to study:
-        <li v-for="task in tasks" :key="task.id">
-          {{ task.name }}
-        </li>
-      </ol>
-      <div v-else>No Task Yet!</div>
-
-      <!-- Place in form so focusing on the input binds enter to the button -->
-      <form>
-        <input
-          v-model="pendingTask"
-          type="text"
-          placeholder="What needs doing?"
-        />
-        <button :disabled="!pendingTask" @click="addTask()">Add task</button>
-      </form>
-
-      <p class="startwrap">
-        <button class="start" @click="newSession()">Start Now!</button>
-      </p>
-    </main>
+        <div class="d-flex">
+          <button
+            class="btn btn-outline-success btn-lg mx-auto"
+            @click="newSession()"
+          >
+            Start Session!
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
-
-<style scoped>
-.timeslider {
-  width: 100%;
-}
-
-main {
-  margin-top: 5em;
-}
-
-datalist {
-  display: flex;
-  justify-content: space-between;
-  color: red;
-}
-
-.startwrap {
-  display: flex;
-  justify-content: center;
-  margin-top: 5em;
-}
-
-.start {
-  width: 40em;
-  height: 3em;
-}
-</style>
