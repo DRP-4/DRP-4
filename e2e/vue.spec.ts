@@ -4,5 +4,8 @@ import { test, expect } from "@playwright/test";
 // https://playwright.dev/docs/intro
 test("visits the app root url", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator("nav")).toContainText("Home");
+  await expect(page.locator("input[type=text]")).toHaveAttribute(
+    "placeholder",
+    "What needs doing?"
+  );
 });
