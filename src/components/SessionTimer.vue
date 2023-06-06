@@ -1,4 +1,6 @@
 <script lang="ts">
+import session_mirror from "@/stores/session_mirror";
+
 interface Slot {
   id: number;
   workId: number | null;
@@ -28,6 +30,12 @@ function mkDate(time: string): Date {
   date.setMinutes(parseInt(times[1]));
   date.setSeconds(0);
   return date;
+}
+
+function loadTasks(): Task[] {
+  return session_mirror.tasks_todo.map(({ id, name }) => {
+    return { id, name, completed: false };
+  });
 }
 
 export default {
@@ -63,16 +71,8 @@ export default {
         workId: null,
         tasksCompleted: 0,
       },
-      sessionMinutes: 180,
-      tasks: [
-        { id: 1, name: "Watch the probability lecture", completed: true },
-        { id: 2, name: "Do comptech paper from 2020", completed: false },
-        {
-          id: 3,
-          name: "Design a cheatsheet for the Networks and Communications",
-          completed: false,
-        },
-      ],
+      sessionMinutes: session_mirror.duration_mins,
+      tasks: loadTasks(),
       currentDate: new Date(),
     };
   },

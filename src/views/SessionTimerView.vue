@@ -14,6 +14,6 @@ export default {
 
 <style scoped>
 .p4 {
-  margin: 4em;
+  margin: 0em;
 }
 </style>
