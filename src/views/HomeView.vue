@@ -49,43 +49,49 @@ export default {
 };
 </script>
 <template>
-  <main>
-    <input
-      v-model="duration"
-      class="timeslider"
-      type="range"
-      min="5"
-      max="120"
-      step="5"
-      list="tickmarks"
-    />
+  <div class="d-flex vh-100">
+    <main class="m-auto">
+      <input
+        v-model="duration"
+        class="timeslider"
+        type="range"
+        min="5"
+        max="120"
+        step="5"
+        list="tickmarks"
+      />
 
-    <datalist id="tickmarks">
-      <option value="5"></option>
-      <option value="15"></option>
-      <option value="30"></option>
-      <option value="60"></option>
-      <option value="120"></option>
-    </datalist>
+      <datalist id="tickmarks">
+        <option value="5"></option>
+        <option value="15"></option>
+        <option value="30"></option>
+        <option value="60"></option>
+        <option value="120"></option>
+      </datalist>
 
-    {{ durationHumanized }}
+      {{ durationHumanized }}
 
-    <ol v-if="tasks.length">
-      Things to study:
-      <li v-for="task in tasks" :key="task.id">
-        {{ task.name }}
-      </li>
-    </ol>
-    <div v-else>No Task Yet!</div>
+      <ol v-if="tasks.length">
+        Things to study:
+        <li v-for="task in tasks" :key="task.id">
+          {{ task.name }}
+        </li>
+      </ol>
+      <div v-else>No Task Yet!</div>
 
-    <input v-model="pendingTask" type="text" placeholder="What needs doing?" />
+      <input
+        v-model="pendingTask"
+        type="text"
+        placeholder="What needs doing?"
+      />
 
-    <button :disabled="!pendingTask" @click="addTask()">Add task</button>
+      <button :disabled="!pendingTask" @click="addTask()">Add task</button>
 
-    <p class="startwrap">
-      <button class="start">Start Now!</button>
-    </p>
-  </main>
+      <p class="startwrap">
+        <button class="start">Start Now!</button>
+      </p>
+    </main>
+  </div>
 </template>
 
 <style scoped>
