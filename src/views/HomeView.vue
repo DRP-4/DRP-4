@@ -71,13 +71,13 @@ export default {
 
       {{ durationHumanized }}
 
-      <ol v-if="tasks.length">
-        Thinks to study:
-        <li v-for="task in tasks" :key="task.id">
-          {{ task.name }}
-        </li>
-      </ol>
-      <div v-else>No Task Yet!</div>
+    <ol v-if="tasks.length">
+      Things to study:
+      <li v-for="task in tasks" :key="task.id">
+        {{ task.name }}
+      </li>
+    </ol>
+    <div v-else>No Task Yet!</div>
 
       <input
         v-model="pendingTask"
