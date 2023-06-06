@@ -19,7 +19,7 @@ const router = createRouter({
     {
       path: "/demos/session_done",
       component: () => import("../views/SessionDoneDemo.vue"),
-    }
+    },
   ],
 });
 

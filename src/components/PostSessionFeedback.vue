@@ -1,75 +1,66 @@
 <script lang="ts">
-import Satisifed from "@/components/icons/Satisfied.vue";
-import Neutral from "@/components/icons/Neutral.vue";
-import Dissatisfied from "@/components/icons/Dissatisfied.vue";
+import Satisifed from "@/components/icons/SatisfiedFace.vue";
+import Neutral from "@/components/icons/NeutralFace.vue";
+import Dissatisfied from "@/components/icons/DissatisfiedFace.vue";
 
 export default {
-    props: {
-        name: {
-            type: String,
-            required: true,
-        }
+  components: {
+    Satisifed,
+    Neutral,
+    Dissatisfied,
+  },
+  props: {
+    name: {
+      type: String,
+      required: true,
     },
-    components: {
-        Satisifed,
-        Neutral,
-        Dissatisfied,
-    },
-    emits: ["satisfied", "neutral", "dissatisfied"],
-}
+  },
+  emits: ["satisfied", "neutral", "dissatisfied"],
+};
 </script>
 
 <template>
-    <div class="centered">
-        <div class="form-horizontal border p-3 rounded thecard">
+  <div class="centered">
+    <div class="form-horizontal border p-3 rounded">
+      <div class="centered">
+        <h2>How was session {{ name }}?</h2>
+      </div>
 
-            <div class="centered">
-                <h2> How was session {{ name }}?</h2>
-            </div>
-
-
-            <div class="centered">
-                <div class="emotions">
-                    <div @click="$emit('satisfied')" class="face">
-                        <Satisifed />
-                    </div>
-                    <div @click="$emit('neutral')" class="face">
-                        <Neutral />
-                    </div>
-                    <div @click="$emit('dissatisfied')" class="face">
-                        <Dissatisfied />
-                    </div>
-                </div>
-            </div>
-
+      <div class="centered">
+        <div class="emotions">
+          <div class="face" @click="$emit('satisfied')">
+            <Satisifed />
+          </div>
+          <div class="face" @click="$emit('neutral')">
+            <Neutral />
+          </div>
+          <div class="face" @click="$emit('dissatisfied')">
+            <Dissatisfied />
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
 .centered {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.thecard {
-    display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .emotions {
-    display: flex;
-    gap: 2em;
-    margin: 1em;
+  display: flex;
+  gap: 2em;
+  margin: 1em;
 }
-
 
 .face {
-    transition: transform .2s;
+  transition: transform 0.2s;
 }
 
-
 .face:hover {
-    transform: scale(1.2);
+  transform: scale(1.2);
 }
 </style>
