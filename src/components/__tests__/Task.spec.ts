@@ -8,6 +8,7 @@ describe("HelloWorld", () => {
     const task = {
       name: "Do your work",
       id: 1,
+      duration: 10,
     };
 
     const wrapper = mount(TaskItem, { props: { task } });
