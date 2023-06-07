@@ -1,5 +1,5 @@
-import { post } from "@/api";
-import { Task } from "@/tasks";
+import { post, get } from "@/api";
+import type { Task } from "@/api/tasks";
 
 export interface Slot {
   start: Date;
@@ -21,6 +21,6 @@ export async function newSession(tasks: string[], duration: number) {
 }
 
 // get the current session for this user
-export async function getSession(): Session {
+export async function getSession(): Promise<Session> {
   return get("current-session");
 }

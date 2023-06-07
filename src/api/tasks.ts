@@ -1,4 +1,4 @@
-import { post } from "@/api";
+import { post, get } from "@/api";
 
 export interface Task {
   name: string;
@@ -13,7 +13,7 @@ export interface CreateTask {
 }
 
 // return all tasks for users current session
-export async function tasks(): Task[] {
+export async function tasks(): Promise<Task[]> {
   return get("tasks");
 }
 
