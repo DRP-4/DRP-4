@@ -2,6 +2,7 @@
 import { RouterLink } from "vue-router";
 
 import type { Task } from "@/api/tasks";
+import TrashCan from "@/components/icons/TrashCan.vue";
 import * as api from "@/api/tasks";
 
 import session_mirror from "@/stores/session_mirror";
@@ -13,7 +14,7 @@ interface Data {
 }
 
 export default {
-  components: { RouterLink },
+  components: { RouterLink, TrashCan },
   data(): Data {
     return {
       duration: "60",
@@ -74,43 +75,26 @@ export default {
     <div class="card m-auto" style="width: 30rem">
       <div class="card-body">
         <div class="mb-3">
-          <label for="duration" class="form-label"
-            >Session Duration: {{ durationHumanized }}</label
-          >
-          <input
-            v-model="duration"
-            class="form-range"
-            type="range"
-            min="20"
-            max="300"
-            step="5"
-          />
+          <label for="duration" class="form-label">Session Duration: {{ durationHumanized }}</label>
+          <input v-model="duration" class="form-range" type="range" min="20" max="300" step="5" />
         </div>
 
         <div class="card mb-5">
           <div class="card-header">Tasks</div>
           <ul class="list-group list-group-flush">
-            <li v-for="task in tasks" :key="task.id" class="list-group-item">
+            <li v-for="(task, idx) in tasks" :key="task.id" class="list-group-item">
               {{ task.name }}
+              <TrashCan @click="tasks.splice(idx, 1)" style="float: right; max-height: 20px" />
             </li>
 
             <!-- Place in form so focusing on the input binds enter to the button -->
             <li class="list-group-item">
               <form class="row" @submit.prevent>
                 <div class="col-auto">
-                  <input
-                    v-model="pendingTask"
-                    class="form-control"
-                    type="text"
-                    placeholder="New task..."
-                  />
+                  <input v-model="pendingTask" class="form-control" type="text" placeholder="New task..." />
                 </div>
                 <div class="col-auto">
-                  <button
-                    :disabled="!pendingTask"
-                    class="btn btn-primary"
-                    @click="addTask()"
-                  >
+                  <button :disabled="!pendingTask" class="btn btn-primary" @click="addTask()">
                     Add task
                   </button>
                 </div>
@@ -120,11 +104,7 @@ export default {
         </div>
 
         <div class="d-flex">
-          <button
-            v-if="hasTasks"
-            class="btn btn-outline-success btn-lg mx-auto"
-            @click="newSession()"
-          >
+          <button v-if="hasTasks" class="btn btn-outline-success btn-lg mx-auto" @click="newSession()">
             Start Session!
           </button>
 
