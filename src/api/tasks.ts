@@ -12,6 +12,12 @@ export interface CreateTask {
   // by postgres
 }
 
-export async function newSession(tasks: string[], duration: number) {
-  return post("new-session", { tasks, duration });
+// return all tasks for users current session
+export async function tasks(): Task[] {
+  return get("tasks");
+}
+
+// update whether a task has been completed
+export async function updateTask(id: number, complete: boolean) {
+  return post("update-task", { id, complete });
 }
