@@ -12,7 +12,7 @@ from util.response import json_response
 from util.user_id import with_user_id
 
 
-@app.route("/api/new-session", methods=["POST"])
+@app.route("/api/session/new", methods=["POST"])
 @with_user_id
 def start_session(user_id):
     body = request.get_json()
@@ -22,6 +22,9 @@ def start_session(user_id):
     db.session.execute(del_sess)
     del_slot = delete(Slot).where(Slot.user_id == user_id)
     db.session.execute(del_slot)
+
+
+    # TODO: only delete uncompleted tasks
     del_tasks = delete(Task).where(Task.user_id == user_id)
 
     # add new session to the database
