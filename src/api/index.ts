@@ -23,3 +23,27 @@ export async function post(route: string, value: any): Promise<Response> {
   });
   return response;
 }
+
+export async function del(route: string, value: any): Promise<Response> {
+  const body = JSON.stringify(value);
+  const response = await fetch(newAPIRequest(route), {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body,
+  });
+  return response;
+}
+
+export async function put(route: string, value: any): Promise<Response> {
+  const body = JSON.stringify(value);
+  const response = await fetch(newAPIRequest(route), {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body,
+  });
+  return response;
+}

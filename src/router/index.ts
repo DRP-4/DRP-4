@@ -20,6 +20,10 @@ const router = createRouter({
       path: "/demos/session_done",
       component: () => import("../views/SessionDoneDemo.vue"),
     },
+    {
+      path: "/session",
+      component: () => import("../views/SessionTimerView.vue"),
+    },
   ],
 });
 

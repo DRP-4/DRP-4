@@ -1,4 +1,13 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, func
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+    DateTime,
+    Time,
+    Boolean,
+    func,
+)
 from sqlalchemy_utils import UUIDType
 from models import db
 
@@ -9,4 +18,7 @@ class Task(db.Model):
         UUIDType(binary=True), ForeignKey("current_session.user_id"), nullable=False
     )
     title = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    completed = Column(Integer, ForeignKey("slot.slot_id"), nullable=True)
     created = Column(DateTime, server_default=func.now())
+    duration = Column(Time, nullable=False)
