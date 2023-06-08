@@ -112,6 +112,7 @@ export default {
       <div class="column flex-grow-1 d-flex flex-column align-items-start">
         <div
           v-for="slot in prevSlots"
+          :key="slot.id"
           :style="{ height: (100 * slot.minutes) / sessionMinutes + '%' }"
           class="d-flex flex-row w-100 align-items-center"
         >
@@ -200,6 +201,7 @@ export default {
         <ul class="w-95 m-auto list-group overflow-auto">
           <li
             v-for="task in tasks"
+            :key="task.id"
             class="list-group-item"
             :class="{ 'list-group-item-success': task.completed }"
           >
