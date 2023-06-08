@@ -1,7 +1,9 @@
 import { post, get, del, put } from "@/api";
 
+export type TaskID = number;
+
 export interface Task {
-  id: number;
+  id: TaskID;
   duration: number;
   name: string;
   description: string;
@@ -9,7 +11,7 @@ export interface Task {
 }
 
 export interface TaskUpdate {
-  id: number;
+  id: TaskID;
   duration?: number;
   name?: string;
   description?: string;
@@ -32,6 +34,6 @@ export async function updateTask(update: TaskUpdate) {
 }
 
 // delete a task given its id
-export async function deleteTask(id: number) {
+export async function deleteTask(id: TaskID) {
   return del("task/delete", { id });
 }
