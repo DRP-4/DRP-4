@@ -15,7 +15,17 @@ from sqlalchemy.dialects import postgresql
 def get_tasks(user_id):
     query = db.select(Task).filter(Task.user_id == user_id).order_by(Task.created)
     tasks = db.session.execute(query).scalars().all()
-    return json_response([{"name": t.title, "id": t.id, "description": t.description, "complete": t.complete} for t in tasks])
+    return json_response(
+        [
+            {
+                "name": t.title,
+                "id": t.id,
+                "description": t.description,
+                "complete": t.complete,
+            }
+            for t in tasks
+        ]
+    )
 
 
 @app.route("/api/task/update", methods=["POST"])
@@ -25,33 +35,33 @@ def update_task(user_id):
     body = request.get_json()
 
     if "name" in body:
-      db.update(Task).where(Task.user_id == user_id and Task.id == body["id"]).values(
-              name=body["name"]
-      )
+        db.update(Task).where(Task.user_id == user_id and Task.id == body["id"]).values(
+            name=body["name"]
+        )
 
     if "description" in body:
-      db.update(Task).where(Task.user_id == user_id and Task.id == body["id"]).values(
-              name=body["description"]
-      )
+        db.update(Task).where(Task.user_id == user_id and Task.id == body["id"]).values(
+            name=body["description"]
+        )
 
     if "complete" in body:
-      # find new complete val. If we just completed, its the id of the latest work
-      # slot, else it's none/null
-      new_complete = None
-      if body["complete"]:
-          # find the latest work slot
-          now = datetime.datetime.now()
-          past_slots = (
-              db.select(Slot)
-              .filter(Slot.user_id == user_id and Slot.start <= now and Slot.work)
-              .order_by(Slot.start)
-          )
-          latest_slot = db.session.execute(past_slots).scalars().all()[-1]
-          new_complete = latest_slot.slot_id
+        # find new complete val. If we just completed, its the id of the latest work
+        # slot, else it's none/null
+        new_complete = None
+        if body["complete"]:
+            # find the latest work slot
+            now = datetime.datetime.now()
+            past_slots = (
+                db.select(Slot)
+                .filter(Slot.user_id == user_id and Slot.start <= now and Slot.work)
+                .order_by(Slot.start)
+            )
+            latest_slot = db.session.execute(past_slots).scalars().all()[-1]
+            new_complete = latest_slot.slot_id
 
-      # make sure to still verify user id, so users can't modify others tasks
-      db.update(Task).where(Task.user_id == user_id and Task.id == body["id"]).values(
-          complete=new_complete
-      )
+        # make sure to still verify user id, so users can't modify others tasks
+        db.update(Task).where(Task.user_id == user_id and Task.id == body["id"]).values(
+            complete=new_complete
+        )
 
     return json_response(body)
