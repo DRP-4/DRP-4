@@ -23,8 +23,9 @@ def start_session(user_id):
     del_slot = delete(Slot).where(Slot.user_id == user_id)
     db.session.execute(del_slot)
 
-    # TODO: only delete uncompleted tasks
-    del_tasks = delete(Task).where(Task.user_id == user_id)
+    del_tasks = delete(Task).where(
+        Task.user_id == user_id and Task.completed is not Null
+    )
 
     # add new session to the database
     start = datetime.datetime.now()
