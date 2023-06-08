@@ -34,7 +34,7 @@ export default {
       this.taskName = "";
       this.taskDescription = "";
       this.includeDescription = false;
-    }
+    },
   },
 };
 </script>
@@ -91,7 +91,12 @@ export default {
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="reset">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          @click="reset"
+        >
           Close
         </button>
         <button

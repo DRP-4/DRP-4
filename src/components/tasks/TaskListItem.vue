@@ -51,10 +51,10 @@ export default {
       <input
         ref="nameInput"
         v-model="editedName"
-        @blur="updateName"
         class="name-input ms-auto"
         placeholder="Enter task name..."
         type="text"
+        @blur="updateName"
       />
       <!-- Description edit status buttons -->
       <button

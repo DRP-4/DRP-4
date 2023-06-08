@@ -1,9 +1,11 @@
 <script lang="ts">
 import type { Task } from "@/api/tasks";
 import TrashCan from "@/components/icons/TrashCan.vue";
-//import * as api from "@/api/tasks";
+import * as tasks from "@/api/tasks";
+import * as sessions from "@/api/session";
 
-import session_mirror from "@/stores/session_mirror";
+// FOR MIRRORING
+//import session_mirror from "@/stores/session_mirror";
 
 interface Data {
   duration: string; // DOM fuckery means this can't be a number
@@ -64,13 +66,11 @@ export default {
     newSession() {
       const duration = parseInt(this.duration);
 
-      // api.newSession(
-      //   this.tasks.map((t) => t.name),
-      //   parseInt(this.duration)
-      // );
+      sessions.newSession(duration);
 
-      session_mirror.duration_mins = duration;
-      session_mirror.tasks_todo = this.tasks;
+      // FOR MIRRORING
+      //session_mirror.duration_mins = duration;
+      //session_mirror.tasks_todo = this.tasks;
 
       this.$router.push("/session");
     },
