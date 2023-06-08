@@ -7,6 +7,7 @@ import session_mirror from "@/stores/session_mirror";
 
 interface Data {
   duration: string; // DOM fuckery means this can't be a number
+  breakDuration: string;
   tasks: Task[];
   pendingTask: string;
 }
@@ -33,6 +34,7 @@ export default {
   data(): Data {
     return {
       duration: "60",
+      breakDuration: "10",
       pendingTask: "",
       tasks: [],
     };
@@ -40,6 +42,10 @@ export default {
   computed: {
     durationHumanized() {
       const duration = parseInt(this.duration);
+      return humanize(duration);
+    },
+    breakDurationHumanized() {
+      const duration = parseInt(this.breakDuration);
       return humanize(duration);
     },
     hasTasks(): boolean {
@@ -79,20 +85,32 @@ export default {
   <div class="vh-100 d-flex align-items-center">
     <div class="card m-auto" style="width: 30rem">
       <div class="card-body">
-        <div class="mb-3">
-          <label for="duration" class="form-label"
-            >Study Session Duration: {{ durationHumanized }}</label
-          >
-          <input
-            v-model="duration"
-            class="form-range"
-            type="range"
-            min="20"
-            max="300"
-            step="5"
-          />
-        </div>
-
+        <div class="card-body">
+  <div class="mb-3">
+    <label for="duration" class="form-label">Study Session Duration: {{ durationHumanized }}</label>
+    <input
+      key="duration"
+      v-model="duration"
+      class="form-range"
+      type="range"
+      min="20"
+      max="300"
+      step="5"
+    />
+  </div>
+  <div class="mb-4">
+    <label for="b-length" class="form-label">Break Length / Hour: {{ breakDurationHumanized }}</label>
+    <input
+      key="b-length"
+      v-model="breakDuration"
+      class="form-range"
+      type="range"
+      min="5"
+      max="30"
+      step="1"
+    />
+  </div>
+</div>
         <div class="card mb-5">
           <div class="card-header">To-do(s)</div>
           <ul class="list-group list-group-flush">
