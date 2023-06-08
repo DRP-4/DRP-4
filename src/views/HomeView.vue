@@ -7,7 +7,6 @@ import session_mirror from "@/stores/session_mirror";
 
 interface Data {
   duration: string; // DOM fuckery means this can't be a number
-  breakDuration: string;
   tasks: Task[];
   pendingTask: string;
 }
@@ -34,7 +33,6 @@ export default {
   data(): Data {
     return {
       duration: "60",
-      breakDuration: "10",
       pendingTask: "",
       tasks: [],
     };
@@ -42,10 +40,6 @@ export default {
   computed: {
     durationHumanized() {
       const duration = parseInt(this.duration);
-      return humanize(duration);
-    },
-    breakDurationHumanized() {
-      const duration = parseInt(this.breakDuration);
       return humanize(duration);
     },
     hasTasks(): boolean {
