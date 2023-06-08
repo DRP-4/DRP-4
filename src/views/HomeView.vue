@@ -82,35 +82,23 @@ export default {
 };
 </script>
 <template>
-  <div class="vh-100 d-flex align-items-center">
-    <div class="card m-auto" style="width: 30rem">
-      <div class="card-body">
-        <div class="card-body">
-  <div class="mb-3">
-    <label for="duration" class="form-label">Study Session Duration: {{ durationHumanized }}</label>
-    <input
-      key="duration"
-      v-model="duration"
-      class="form-range"
-      type="range"
-      min="20"
-      max="300"
-      step="5"
-    />
-  </div>
-  <div class="mb-4">
-    <label for="b-length" class="form-label">Break Length / Hour: {{ breakDurationHumanized }}</label>
-    <input
-      key="b-length"
-      v-model="breakDuration"
-      class="form-range"
-      type="range"
-      min="5"
-      max="30"
-      step="1"
-    />
-  </div>
-</div>
+        <div class="vh-100 d-flex align-items-center">
+          <div class="card m-auto" style="width: 30rem">
+            <div class="card-body">
+              <div class="card-body">
+        <div class="mb-3">
+          <label for="duration" class="form-label">Study Session Duration (with breaks): {{ durationHumanized }}</label>
+          <input
+            key="duration"
+            v-model="duration"
+            class="form-range"
+            type="range"
+            min="20"
+            max="300"
+            step="5"
+          />
+        </div>
+      </div>
         <div class="card mb-5">
           <div class="card-header">To-do(s)</div>
           <ul class="list-group list-group-flush">
