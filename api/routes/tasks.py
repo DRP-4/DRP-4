@@ -22,7 +22,7 @@ def get_tasks(user_id):
                 "id": t.id,
                 "description": t.description,
                 "complete": t.complete,
-                "duration": t.duration
+                "duration": t.duration,
             }
             for t in tasks
         ]
@@ -47,7 +47,8 @@ def update_task(user_id):
 
     if "duration" in body:
         db.update(Task).where(Task.user_id == user_id and Task.id == body["id"]).values(
-            duration=body["duration"])
+            duration=body["duration"]
+        )
 
     if "complete" in body:
         # find new complete val. If we just completed, its the id of the latest work
@@ -70,6 +71,7 @@ def update_task(user_id):
         )
 
     return json_response(body)
+
 
 @app.route("/api/task/delete", methods=["DELETE"])
 @with_user_id

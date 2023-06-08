@@ -1,4 +1,13 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Time, Boolean, func
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+    DateTime,
+    Time,
+    Boolean,
+    func,
+)
 from sqlalchemy_utils import UUIDType
 from models import db
 
