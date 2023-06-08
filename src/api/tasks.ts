@@ -8,6 +8,14 @@ export interface Task {
   complete: boolean;
 }
 
+export interface TaskUpdate {
+  id: number;
+  duration?: number;
+  name?: string;
+  description?: string;
+  complete?: boolean;
+}
+
 // create a new task given a name and description
 export async function createTask(name: string, description: string) {
   return post("task/create", { name, description });
@@ -19,14 +27,8 @@ export async function tasks(): Promise<Task[]> {
 }
 
 // update whether a task has been completed
-export async function updateTask(
-  id: number,
-  duration?: number,
-  name?: string,
-  description?: string,
-  complete?: boolean
-) {
-  return put("task/update", { id, duration, name, description, complete });
+export async function updateTask(update: TaskUpdate) {
+  return put("task/update", update);
 }
 
 // delete a task given its id
