@@ -17,12 +17,16 @@ const router = createRouter({
       component: () => import("../views/AboutView.vue"),
     },
     {
+      path: "/session",
+      component: () => import("../views/SessionTimerView.vue"),
+    },
+    {
       path: "/demos/session_done",
       component: () => import("../views/SessionDoneDemo.vue"),
     },
     {
-      path: "/session",
-      component: () => import("../views/SessionTimerView.vue"),
+      path: "/demos/task_view",
+      component: () => import("../views/TaskViewDemo.vue"),
     },
   ],
 });
