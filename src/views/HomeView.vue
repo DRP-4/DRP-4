@@ -1,7 +1,6 @@
 <script lang="ts">
-import { RouterLink } from "vue-router";
-
 import type { Task } from "@/api/tasks";
+import TrashCan from "@/components/icons/TrashCan.vue";
 import * as api from "@/api/tasks";
 
 import session_mirror from "@/stores/session_mirror";
@@ -12,8 +11,25 @@ interface Data {
   pendingTask: string;
 }
 
+function humanize(duration: number): string {
+  if (duration < 60) {
+    return `${duration} mins`;
+  } else if (duration === 60) {
+    return "1 hour";
+  } else {
+    const hours = Math.floor(duration / 60);
+    const minutes = duration % 60;
+
+    if (minutes === 0) {
+      return `${hours} hours`;
+    } else {
+      return `${hours} hours ${minutes} mins`;
+    }
+  }
+}
+
 export default {
-  components: { RouterLink },
+  components: { TrashCan },
   data(): Data {
     return {
       duration: "60",
@@ -24,24 +40,13 @@ export default {
   computed: {
     durationHumanized() {
       const duration = parseInt(this.duration);
-
-      if (duration < 60) {
-        return `${duration} mins`;
-      } else if (duration === 60) {
-        return "1 hour";
-      } else {
-        const hours = Math.floor(duration / 60);
-        const minutes = duration % 60;
-
-        if (minutes === 0) {
-          return `${hours} hours`;
-        } else {
-          return `${hours} hours ${minutes} mins`;
-        }
-      }
+      return humanize(duration);
     },
     hasTasks(): boolean {
       return this.tasks.length != 0;
+    },
+    humanized() {
+      return this.tasks.map((t) => humanize(t.duration));
     },
   },
   methods: {
@@ -49,6 +54,7 @@ export default {
       const task = {
         name: this.pendingTask,
         id: this.tasks.length,
+        duration: 30,
       };
       this.tasks.push(task);
       this.pendingTask = "";
@@ -90,8 +96,28 @@ export default {
         <div class="card mb-5">
           <div class="card-header">To-do(s)</div>
           <ul class="list-group list-group-flush">
-            <li v-for="task in tasks" :key="task.id" class="list-group-item">
+            <li
+              v-for="(task, idx) in tasks"
+              :key="task.id"
+              class="list-group-item"
+            >
               {{ task.name }}
+
+              <input
+                v-model="task.duration"
+                class="form-range"
+                type="range"
+                min="5"
+                max="120"
+                step="5"
+              />
+
+              {{ humanized[idx] }}
+
+              <TrashCan
+                style="float: right; max-height: 20px"
+                @click="tasks.splice(idx, 1)"
+              />
             </li>
 
             <!-- Place in form so focusing on the input binds enter to the button -->

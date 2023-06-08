@@ -3,6 +3,7 @@ import { post } from "@/api";
 export interface Task {
   name: string;
   id: number;
+  duration: number;
 }
 
 export interface CreateTask {
