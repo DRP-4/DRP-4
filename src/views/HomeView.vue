@@ -4,7 +4,6 @@ import TrashCan from "@/components/icons/TrashCan.vue";
 //import * as api from "@/api/tasks";
 
 import session_mirror from "@/stores/session_mirror";
-import * as session from "@/api/session";
 
 interface Data {
   duration: string; // DOM fuckery means this can't be a number
@@ -55,6 +54,8 @@ export default {
       const task = {
         name: this.pendingTask,
         id: this.tasks.length,
+        description: "",
+        complete: false,
         duration: 30,
       };
       this.tasks.push(task);
