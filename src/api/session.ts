@@ -17,8 +17,8 @@ export interface Session {
 
 // make a new session and slots in the database, given a duration
 // also deletes all completed tasks
-export async function newSession(duration: number) {
-  return post("session/new", { duration });
+export async function newSession(tasks: string[], duration: number) {
+  return post("session/new", { tasks, duration });
 }
 
 // get the current session for this user
