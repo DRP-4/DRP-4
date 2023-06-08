@@ -19,6 +19,6 @@ class Task(db.Model):
     )
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    completed = Column(Boolean, nullable=False)
+    completed = Column(Integer, ForeignKey("slot.slot_id"), nullable=True)
     created = Column(DateTime, server_default=func.now())
     duration = Column(Time, nullable=False)
