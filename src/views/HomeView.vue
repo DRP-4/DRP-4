@@ -75,7 +75,7 @@ export default {
       <div class="card-body">
         <div class="mb-3">
           <label for="duration" class="form-label"
-            >Session Duration: {{ durationHumanized }}</label
+            >Study Session Duration: {{ durationHumanized }}</label
           >
           <input
             v-model="duration"
@@ -88,7 +88,7 @@ export default {
         </div>
 
         <div class="card mb-5">
-          <div class="card-header">Tasks</div>
+          <div class="card-header">To-do(s)</div>
           <ul class="list-group list-group-flush">
             <li v-for="task in tasks" :key="task.id" class="list-group-item">
               {{ task.name }}
