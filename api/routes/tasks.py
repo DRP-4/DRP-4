@@ -21,7 +21,7 @@ def get_tasks(user_id):
                 "name": t.title,
                 "id": t.id,
                 "description": t.description,
-                "complete": t.complete,
+                "complete": t.complete is not None,
                 "duration": t.duration,
             }
             for t in tasks
