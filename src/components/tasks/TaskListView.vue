@@ -2,7 +2,7 @@
 import TaskListItem from "./TaskListItem.vue";
 import NewTaskSetup from "./NewTaskSetup.vue";
 import MagicUrl from "quill-magic-url";
-import { Task, type TaskID } from "@/api/tasks";
+import { type Task, type TaskID } from "@/api/tasks";
 import { Duration } from "@/api/duration";
 
 export default {

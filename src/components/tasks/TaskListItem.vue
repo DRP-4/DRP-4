@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Task } from "@/api/tasks";
+import type { Task } from "@/api/tasks";
 import { QuillEditor } from "@vueup/vue-quill";
 import MagicUrl from "quill-magic-url";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
