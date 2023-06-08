@@ -32,7 +32,7 @@ def get_tasks(user_id):
 @app.route("/api/task/update", methods=["PUT"])
 @with_user_id
 def update_task(user_id):
-    # body has id and new complete value
+    # body has id and possibly new values for all task params
     body = request.get_json()
 
     if "name" in body:
