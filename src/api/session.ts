@@ -15,12 +15,13 @@ export interface Session {
   past_slots: Slot[];
 }
 
-// make a new session and slots in the database, given some tasks and a duration
-export async function newSession(tasks: string[], duration: number) {
-  return post("new-session", { tasks, duration });
+// make a new session and slots in the database, given a duration
+// also deletes all completed tasks
+export async function newSession(duration: number) {
+  return post("session/new", { duration });
 }
 
 // get the current session for this user
 export async function getSession(): Promise<Session> {
-  return get("current-session");
+  return get("session/current");
 }
