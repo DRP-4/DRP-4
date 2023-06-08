@@ -23,7 +23,6 @@ def start_session(user_id):
     del_slot = delete(Slot).where(Slot.user_id == user_id)
     db.session.execute(del_slot)
 
-
     # TODO: only delete uncompleted tasks
     del_tasks = delete(Task).where(Task.user_id == user_id)
 
@@ -33,14 +32,6 @@ def start_session(user_id):
 
     session = CurrentSession(user_id=user_id, start=start, end=end)
     db.session.add(session)
-
-    # add tasks to the database
-    for title in body["tasks"]:
-        task = Task(
-            title=title,
-            user_id=user_id,
-        )
-        db.session.add(task)
 
     # slot calculation algorithm
     # for now, just add 45-min slots followed by 15-min breaks
