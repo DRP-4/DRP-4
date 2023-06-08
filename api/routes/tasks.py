@@ -70,3 +70,11 @@ def update_task(user_id):
         )
 
     return json_response(body)
+
+@app.route("/api/task/delete", methods=["DELETE"])
+@with_user_id
+def delete_task(user_id):
+    # body has task id
+    body = request.get_json()
+
+    db.delete(Task).where(Task.user_id == user_id and Task.id == body["id"])
