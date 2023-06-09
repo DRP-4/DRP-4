@@ -5,6 +5,7 @@ from models.task import Task
 from models.slot import Slot
 from util.response import json_response
 from util.user_id import with_user_id
+from util.now import instant
 from flask import request, abort
 from sqlalchemy import update
 
@@ -102,7 +103,7 @@ def update_task(user_id):
         # slot, else it's none/null
         if complete:
             # find the latest work slot
-            now = datetime.datetime.now()
+            now = instant()
             past_slots = (
                 db.session.select(Slot)
                 .filter(Slot.user_id == user_id, Slot.start <= now, Slot.work)

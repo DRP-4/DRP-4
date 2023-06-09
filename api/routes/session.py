@@ -11,6 +11,7 @@ from models.current_session import CurrentSession
 from models.task import Task
 from util.response import json_response
 from util.user_id import with_user_id
+from util.now import instant
 
 
 def to_unix(date: datetime.datetime):
@@ -41,7 +42,7 @@ def start_session(user_id):
     do_post_session_cleanup(user_id)
 
     # add new session to the database
-    start = datetime.datetime.now()
+    start = instant()
     end = start + datetime.timedelta(minutes=duration)
 
     session = CurrentSession(user_id=user_id, start=start, end=end)

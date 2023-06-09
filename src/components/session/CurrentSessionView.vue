@@ -1,25 +1,34 @@
 <script lang="ts">
+import { jumpSeconds } from "@/api/debug";
 import { type Session, getSession, endSession } from "@/api/session";
+import { store } from "@/stores/time_jump";
 import TimelineElem from "./TimelineElem.vue";
+
+function dateWithDebugOffset() {
+  const thisInstant = new Date();
+  const thisInstantUnix = thisInstant.getTime();
+  const newInstantUnix = thisInstantUnix + store.deltaInSeconds * 1000;
+  const newInstant = new Date(newInstantUnix);
+  return newInstant;
+}
 
 export default {
   data() {
     return {
       session: undefined as Session | undefined,
-      currentDate: new Date(),
+      currentDate: dateWithDebugOffset(),
+      interval: undefined as number | undefined,
 
       calculateSlotHeight(start: Date, end: Date): string {
         if (this.session === undefined) {
           return "auto";
         }
-        console.log(this.session);
         const sessionStart = Math.floor(this.session.start.getTime() / 1000);
         const sessionEnd = Math.floor(this.session.end.getTime() / 1000);
         const slotStart = Math.floor(start.getTime() / 1000);
-        const slotEnd =Math.floor(end.getTime() / 1000);
+        const slotEnd = Math.floor(end.getTime() / 1000);
 
         const ratio = (slotEnd - slotStart) / (sessionEnd - sessionStart);
-        console.log(ratio, sessionEnd, sessionStart, slotEnd, slotStart);
         return `${100 * ratio}%`;
       },
 
@@ -29,16 +38,15 @@ export default {
 
       isAhead(start: Date): boolean {
         return this.currentDate <= start;
-      }
+      },
     };
   },
 
-  async created() {
+  async mounted() {
     this.session = await getSession();
     const self = this;
-    setInterval(() => {
-      this.currentDate = new Date();
-
+    this.interval = setInterval(() => {
+      this.currentDate = dateWithDebugOffset();
       if (this.session !== undefined) {
         if (this.currentDate > this.session?.end) {
           endSession();
@@ -46,6 +54,10 @@ export default {
         }
       }
     }, 100);
+  },
+
+  async unmounted() {
+    clearInterval(this.interval);
   },
 
   components: {
@@ -57,6 +69,12 @@ export default {
       endSession();
       this.$emit("done");
     },
+
+    async jump() {
+      const JUMPING_BY = 900; // 15 minutes
+      store.jump(JUMPING_BY);
+      await jumpSeconds(JUMPING_BY);
+    },
   },
 
   emits: ["done"],
@@ -66,8 +84,8 @@ export default {
 <template>
   <div class="w-100 h-100 card">
     <div class="card-header hstack">
-      <span class="me-auto">Session (in progress)</span>
-      <button type="button" class="btn btn-sm btn-warning me-1">
+      <span class="me-auto">Session (in progress, current time {{ currentDate.toTimeString() }})</span>
+      <button type="button" class="btn btn-sm btn-warning me-1" @click="jump">
         Skip 15 minutes ahead
       </button>
       <button
@@ -87,7 +105,7 @@ export default {
         :in-progress="isInProgress(slot.start, slot.end)"
         :ahead="isAhead(slot.start)"
       >
-      <small>{{ slot.is_work ? "Study slot" : "Break" }}</small>
+        <small>{{ slot.is_work ? "Study slot" : "Break" }}</small>
       </TimelineElem>
     </div>
   </div>

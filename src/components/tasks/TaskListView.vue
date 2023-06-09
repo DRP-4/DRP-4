@@ -33,9 +33,7 @@ export default {
 
   methods: {
     async add(newTask: { name: string; description?: string }) {
-      this.console.log(newTask);
       const id = await createTask(newTask);
-      this.console.log(id);
       this.tasks.set(
         id,
         new Task(id, newTask.name, { description: newTask.description })
