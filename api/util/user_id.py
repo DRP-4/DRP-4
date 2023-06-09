@@ -1,5 +1,5 @@
 from uuid import UUID, uuid4
-from flask import request
+from flask import request, abort
 from app import running_as_dev
 
 # SameSite parameter for the SetCookie header. Should be strict if frontend and API run off one domain
@@ -17,7 +17,10 @@ def with_user_id(func):
         set_cookie = False
         id = None
         if _cookies_user_id_key in request.cookies:
-            id = UUID(request.cookies[_cookies_user_id_key])
+            try:
+                id = UUID(request.cookies[_cookies_user_id_key])
+            except ValueError:
+                abort(400)
         else:
             id = new_user_id()
             set_cookie = True

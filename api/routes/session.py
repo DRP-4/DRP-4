@@ -1,6 +1,6 @@
 import datetime
 
-from flask import request
+from flask import request, abort
 from sqlalchemy import delete
 
 from app import app
@@ -16,6 +16,11 @@ from util.user_id import with_user_id
 @with_user_id
 def start_session(user_id):
     body = request.get_json()
+    if "duration" not in body:
+        abort(400)
+    duration = body["duration"]
+    if duration is not int or duration < 0:
+        abort(400)
 
     # delete any sessions that were occuring
     del_sess = delete(CurrentSession).where(CurrentSession.user_id == user_id)
@@ -23,13 +28,12 @@ def start_session(user_id):
     del_slot = delete(Slot).where(Slot.user_id == user_id)
     db.session.execute(del_slot)
 
-    del_tasks = delete(Task).where(
-        Task.user_id == user_id and Task.completed is not Null
-    )
+    del_tasks = delete(Task).where(Task.user_id == user_id, Task.completed != None)
+    db.session.execute(del_tasks)
 
     # add new session to the database
     start = datetime.datetime.now()
-    end = start + datetime.timedelta(minutes=body["duration"])
+    end = start + datetime.timedelta(minutes=duration)
 
     session = CurrentSession(user_id=user_id, start=start, end=end)
     db.session.add(session)
