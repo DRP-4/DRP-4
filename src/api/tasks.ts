@@ -18,9 +18,14 @@ export interface TaskUpdate {
   complete?: boolean;
 }
 
-// create a new task given a name and description
-export async function createTask(name: string, description: string) {
-  return post("task/create", { name, description });
+// Create a new task given name, duration and description
+export async function createTask(name: string, duration: number, description: string) {
+	return post("task/create", { name, duration, description });
+}
+
+// create a new task given only a name
+export async function createTaskName(name: string) {
+  return post("task/create", { name, "description": null, "duration": null });
 }
 
 // return all tasks for users current session
