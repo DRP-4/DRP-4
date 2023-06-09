@@ -2,31 +2,19 @@
 import TaskListItem from "./TaskListItem.vue";
 import NewTaskSetup from "./NewTaskSetup.vue";
 import MagicUrl from "quill-magic-url";
-import { type Task, type TaskID } from "@/api/tasks";
-import { Duration } from "@/api/duration";
+import { tasks, deleteTask, Task, type TaskID } from "@/api/tasks";
+import { createTask } from "@/api/tasks";
 
 export default {
   components: {
     TaskListItem,
     NewTaskSetup,
   },
+
   data() {
     return {
       modalKey: 0,
-      tasks: new Map([
-        [1, new Task(1, "Clean the room").withTimeEstimate(new Duration(15))],
-        [
-          2,
-          new Task(2, "Study probability").withTimeEstimate(new Duration(30)),
-        ],
-        [3, new Task(3, "Study vectors").withTimeEstimate(new Duration(45))],
-        [
-          4,
-          new Task(4, "Book tickets to Cambridge").withDescription(
-            "Here is a sample task description"
-          ),
-        ],
-      ]),
+      tasks: new Map(),
       selectedId: undefined,
       console,
       MagicUrl,
@@ -39,13 +27,25 @@ export default {
     },
   },
 
+  async created() {
+    this.tasks = await tasks();
+  },
+
   methods: {
+    async add(newTask: {name: string, description?: string}) {
+      this.console.log(newTask);
+      const id = await createTask(newTask);
+      this.console.log(id);
+      this.tasks.set(id, new Task(id, newTask.name, { description: newTask.description }));
+    },
+
     update(task: Task) {
       this.tasks.set(task.id, task);
     },
 
     remove(id: TaskID) {
       this.tasks.delete(id);
+      deleteTask(id);
     },
   },
 };
@@ -73,7 +73,7 @@ export default {
         aria-labelledby="addNewTaskLabel"
         aria-hidden="true"
       >
-        <NewTaskSetup />
+        <NewTaskSetup @add="add" />
       </div>
     </div>
     <div class="card-body">

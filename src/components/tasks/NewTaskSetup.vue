@@ -102,6 +102,7 @@ export default {
         <button
           type="button"
           class="btn btn-success"
+          data-bs-dismiss="modal"
           :disabled="taskName.trim().length == 0"
           @click="add"
         >

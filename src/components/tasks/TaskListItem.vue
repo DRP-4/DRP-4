@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Task } from "@/api/tasks";
+import { Task, updateTask } from "@/api/tasks";
 import { QuillEditor } from "@vueup/vue-quill";
 import MagicUrl from "quill-magic-url";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
@@ -30,6 +30,7 @@ export default {
       const target = event.target;
       if (target instanceof HTMLInputElement) {
         this.$emit("task:update", { ...this.task, name: target.value });
+        updateTask({ id: this.task.id, name: target.value });
       }
     },
 
@@ -38,6 +39,7 @@ export default {
         ...this.task,
         description: this.editedDescription,
       });
+      updateTask({ id: this.task.id, description: this.editedDescription });
       this.editedDescription = undefined;
     },
   },
