@@ -113,10 +113,6 @@ def update_task(user_id):
 
     if len(prop_updates) > 0:
         # make sure to still verify user id, so users can't modify others tasks
-        task = db.session.query(Task).where().one()
-        if task is None:
-            abort(400)
-        # update all changed properties
         stmt = (
             update(Task)
             .where(Task.user_id == user_id, Task.task_id == task_id)
