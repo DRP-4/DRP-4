@@ -1,4 +1,5 @@
 import datetime
+import time
 
 from flask import request, abort
 from sqlalchemy import delete
@@ -12,16 +13,11 @@ from util.response import json_response
 from util.user_id import with_user_id
 
 
-@app.route("/api/session/new", methods=["POST"])
-@with_user_id
-def start_session(user_id):
-    body = request.get_json()
-    if "duration" not in body:
-        abort(400)
-    duration = body["duration"]
-    if duration is not int or duration < 0:
-        abort(400)
+def to_unix(date: datetime.datetime):
+    return time.mktime(date.timetuple())
 
+
+def do_post_session_cleanup(user_id):
     # delete any sessions that were occuring
     del_sess = delete(CurrentSession).where(CurrentSession.user_id == user_id)
     db.session.execute(del_sess)
@@ -30,6 +26,19 @@ def start_session(user_id):
 
     del_tasks = delete(Task).where(Task.user_id == user_id, Task.completed != None)
     db.session.execute(del_tasks)
+
+
+@app.route("/api/session/new", methods=["POST"])
+@with_user_id
+def start_session(user_id):
+    body = request.get_json()
+    if "duration" not in body:
+        abort(400)
+    duration = body["duration"]
+    if not isinstance(duration, int) or duration < 0:
+        abort(400)
+
+    do_post_session_cleanup(user_id)
 
     # add new session to the database
     start = datetime.datetime.now()
@@ -59,3 +68,64 @@ def start_session(user_id):
     db.session.commit()
 
     return json_response(body)
+
+
+@app.route("/api/session/end", methods=["POST"])
+@with_user_id
+def end_session(used_id):
+    do_post_session_cleanup(used_id)
+    db.session.commit()
+    return "", 204
+
+
+@app.route("/api/session/active", methods=["GET"])
+@with_user_id
+def is_active(user_id):
+    query = db.select(CurrentSession).filter(CurrentSession.user_id == user_id)
+    session = db.session.execute(query).scalars().first()
+    return json_response({"active": session is not None})
+
+
+@app.route("/api/session/current", methods=["GET"])
+@with_user_id
+def current_session(user_id):
+    query = db.select(CurrentSession).filter(CurrentSession.user_id == user_id)
+    session = db.session.execute(query).scalars().first()
+    if session is None:
+        abort(400)
+
+    session_start_unix = to_unix(session.start)
+    session_end_unix = to_unix(session.end)
+
+    slots_query = db.select(Slot).filter(Slot.user_id == user_id)
+    slots_scalar = db.session.execute(slots_query).scalars().all()
+
+    slots = list(
+        map(
+            lambda slot_scalar: {
+                "start_unix": to_unix(slot_scalar.start),
+                "end_unix": to_unix(slot_scalar.end),
+                "is_work": slot_scalar.work,
+                "completed_tasks": list(map(
+                    lambda task_scalar: {
+                        "name": task_scalar.title,
+                        "id": task_scalar.task_id,
+                        "description": task_scalar.description,
+                        "complete": True,
+                        "duration": task_scalar.duration_minutes
+                    },
+                    db.session.execute(
+                        db.select(Task).filter(
+                            Task.user_id == user_id,
+                            Task.completed == slot_scalar.slot_id
+                        )
+                    ),
+                )),
+            },
+            slots_scalar,
+        )
+    )
+
+    return json_response(
+        {"start_unix": session_start_unix, "end_unix": session_end_unix, "slots": slots}
+    )
