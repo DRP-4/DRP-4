@@ -107,21 +107,23 @@ def current_session(user_id):
                 "start_unix": to_unix(slot_scalar.start),
                 "end_unix": to_unix(slot_scalar.end),
                 "is_work": slot_scalar.work,
-                "completed_tasks": list(map(
-                    lambda task_scalar: {
-                        "name": task_scalar.title,
-                        "id": task_scalar.task_id,
-                        "description": task_scalar.description,
-                        "complete": True,
-                        "duration": task_scalar.duration_minutes
-                    },
-                    db.session.execute(
-                        db.select(Task).filter(
-                            Task.user_id == user_id,
-                            Task.completed == slot_scalar.slot_id
-                        )
-                    ),
-                )),
+                "completed_tasks": list(
+                    map(
+                        lambda task_scalar: {
+                            "name": task_scalar.title,
+                            "id": task_scalar.task_id,
+                            "description": task_scalar.description,
+                            "complete": True,
+                            "duration": task_scalar.duration_minutes,
+                        },
+                        db.session.execute(
+                            db.select(Task).filter(
+                                Task.user_id == user_id,
+                                Task.completed == slot_scalar.slot_id,
+                            )
+                        ),
+                    )
+                ),
             },
             slots_scalar,
         )
