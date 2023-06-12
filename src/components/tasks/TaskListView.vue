@@ -53,7 +53,7 @@ export default {
 </script>
 
 <template>
-  <div class="card h-100 w-100 overflow-scroll">
+  <div class="card h-100 w-100">
     <div class="card-header hstack">
       <span class="me-auto">Tasks</span>
 
@@ -77,7 +77,7 @@ export default {
         <NewTaskSetup @add="add" />
       </div>
     </div>
-    <div class="card-body">
+    <div class="card-body tasks-overflow">
       <div v-for="task in sortedTaskList" :key="task.id" class="p-2">
         <TaskListItem
           :task="task"
@@ -88,3 +88,18 @@ export default {
     </div>
   </div>
 </template>
+
+<style scoped>
+.tasks-overflow {
+  overflow-y: scroll;
+}
+
+.tasks-overflow::-webkit-scrollbar {
+  display: none;
+}
+
+.tasks-overflow {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>
