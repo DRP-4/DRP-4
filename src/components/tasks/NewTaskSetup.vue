@@ -28,6 +28,7 @@ export default {
         name: this.taskName,
         description: this.includeDescription ? this.taskDescription : undefined,
       });
+      this.reset();
     },
 
     reset() {
