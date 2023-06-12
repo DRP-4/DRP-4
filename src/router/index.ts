@@ -24,14 +24,6 @@ const router = createRouter({
       path: "/demos/session_done",
       component: () => import("../views/SessionDoneDemo.vue"),
     },
-    {
-      path: "/demos/task_view",
-      component: () => import("../views/TaskViewDemo.vue"),
-    },
-    {
-      path: "/demos/new_home",
-      component: () => import("../views/NewHomeDemo.vue"),
-    },
   ],
 });
 

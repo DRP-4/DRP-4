@@ -1,166 +1,49 @@
 <script lang="ts">
-import type { Task } from "@/api/tasks";
-import TrashCan from "@/components/icons/TrashCan.vue";
-import * as tasks from "@/api/tasks";
-import * as sessions from "@/api/session";
-
-// FOR MIRRORING
-//import session_mirror from "@/stores/session_mirror";
-
-interface Data {
-  duration: string; // DOM fuckery means this can't be a number
-  tasks: Task[];
-  pendingTask: string;
-}
-
-function humanize(duration: number): string {
-  if (duration < 60) {
-    return `${duration} mins`;
-  } else if (duration === 60) {
-    return "1 hour";
-  } else {
-    const hours = Math.floor(duration / 60);
-    const minutes = duration % 60;
-
-    if (minutes === 0) {
-      return `${hours} hours`;
-    } else {
-      return `${hours} hours ${minutes} mins`;
-    }
-  }
-}
+import { isInSession } from "@/api/session";
+import TaskListView from "../components/tasks/TaskListView.vue";
+import CurrentSessionView from "../components/session/CurrentSessionView.vue";
+import NewSessionSetup from "@/components/session/NewSessionSetup.vue";
 
 export default {
-  components: { TrashCan },
-  data(): Data {
+  data() {
     return {
-      duration: "60",
-      pendingTask: "",
-      tasks: [],
+      fakeKey: 0,
+      inSession: false,
     };
   },
-  computed: {
-    durationHumanized() {
-      const duration = parseInt(this.duration);
-      return humanize(duration);
-    },
-    hasTasks(): boolean {
-      return this.tasks.length != 0;
-    },
-    humanized() {
-      return this.tasks.map((t) => humanize(t.duration));
-    },
+
+  async created() {
+    this.inSession = await isInSession();
   },
+
+  components: {
+    TaskListView,
+    CurrentSessionView,
+    NewSessionSetup,
+  },
+
   methods: {
-    addTask() {
-      const task = {
-        name: this.pendingTask,
-        id: this.tasks.length,
-        description: "",
-        complete: false,
-        duration: 30,
-      };
-      this.tasks.push(task);
-      this.pendingTask = "";
+    beginSession() {
+      this.fakeKey += 2;
+      this.inSession = true;
     },
-    newSession() {
-      const duration = parseInt(this.duration);
 
-      sessions.newSession(duration);
-
-      // FOR MIRRORING
-      //session_mirror.duration_mins = duration;
-      //session_mirror.tasks_todo = this.tasks;
-
-      this.$router.push("/session");
+    endSession() {
+      this.fakeKey += 2;
+      this.inSession = false;
     },
   },
 };
 </script>
+
 <template>
-  <div class="vh-100 d-flex align-items-center">
-    <div class="card m-auto" style="width: 30rem">
-      <div class="card-body">
-        <div class="mb-3">
-          <label for="duration" class="form-label"
-            >Study Session Duration: {{ durationHumanized }}</label
-          >
-          <input
-            v-model="duration"
-            class="form-range"
-            type="range"
-            min="20"
-            max="300"
-            step="5"
-          />
-        </div>
-
-        <div class="card mb-5">
-          <div class="card-header">To-do(s)</div>
-          <ul class="list-group list-group-flush">
-            <li
-              v-for="(task, idx) in tasks"
-              :key="task.id"
-              class="list-group-item"
-            >
-              {{ task.name }}
-
-              <input
-                v-model="task.duration"
-                class="form-range"
-                type="range"
-                min="5"
-                max="120"
-                step="5"
-              />
-
-              {{ humanized[idx] }}
-
-              <TrashCan
-                style="float: right; max-height: 20px"
-                @click="tasks.splice(idx, 1)"
-              />
-            </li>
-
-            <!-- Place in form so focusing on the input binds enter to the button -->
-            <li class="list-group-item">
-              <form class="row" @submit.prevent>
-                <div class="col-auto">
-                  <input
-                    v-model="pendingTask"
-                    class="form-control"
-                    type="text"
-                    placeholder="New task..."
-                  />
-                </div>
-                <div class="col-auto">
-                  <button
-                    :disabled="!pendingTask"
-                    class="btn btn-primary"
-                    @click="addTask()"
-                  >
-                    Add task
-                  </button>
-                </div>
-              </form>
-            </li>
-          </ul>
-        </div>
-
-        <div class="d-flex">
-          <button
-            v-if="hasTasks"
-            class="btn btn-outline-success btn-lg mx-auto"
-            @click="newSession()"
-          >
-            Start Session!
-          </button>
-
-          <button v-else disabled="true" class="btn btn-lg mx-auto">
-            Add some tasks!
-          </button>
-        </div>
-      </div>
+  <div class="vh-100 vw-100 p-4 hstack">
+    <div class="h-100 w-50 me-3">
+      <TaskListView />
+    </div>
+    <div class="h-100 w-50 ms-3">
+      <CurrentSessionView v-if="inSession" @done="endSession" />
+      <NewSessionSetup v-else @done="beginSession" />
     </div>
   </div>
 </template>
