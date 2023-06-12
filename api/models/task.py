@@ -13,9 +13,7 @@ from models import db
 
 class Task(db.Model):
     task_id = Column(Integer, primary_key=True)
-    user_id = Column(
-        UUIDType(binary=True), ForeignKey("current_session.user_id"), nullable=False
-    )
+    user_id = Column(UUIDType(binary=True), nullable=False)
     title = Column(String, nullable=False)
     description = Column(String, nullable=True)
     completed = Column(Integer, ForeignKey("slot.slot_id"), nullable=True)
