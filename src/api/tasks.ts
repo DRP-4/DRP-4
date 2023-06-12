@@ -1,37 +1,93 @@
 import { post, get, del, put } from "@/api";
+import { Duration } from "./duration";
 
-export interface Task {
+export type TaskID = number;
+
+export interface APITask {
   id: number;
-  duration: number;
   name: string;
-  description: string;
-  complete: boolean;
+  description: string | null;
+  duration: number | null;
+  completed: boolean;
+}
+
+export class Task {
+  public id: TaskID;
+  public name: string;
+  public duration?: Duration;
+  public description?: string;
+  public complete: boolean;
+
+  public constructor(
+    id: number,
+    name: string,
+    cfg: { duration?: Duration; description?: string; complete?: boolean }
+  ) {
+    this.id = id;
+    this.name = name;
+    this.description = cfg?.description;
+    this.duration = cfg?.duration;
+    this.complete = cfg?.complete === undefined ? false : cfg?.complete;
+  }
+
+  public static parseFromAPI(apiTask: {
+    id: number;
+    name: string;
+    description: string | null;
+    duration: number | null;
+    completed: boolean;
+  }) {
+    return new Task(apiTask.id, apiTask.name, {
+      description:
+        apiTask.description === null ? undefined : apiTask.description,
+      duration:
+        apiTask.duration === null ? undefined : new Duration(apiTask.duration),
+      complete: apiTask.completed,
+    });
+  }
 }
 
 export interface TaskUpdate {
-  id: number;
-  duration?: number;
+  id: TaskID;
+  duration?: Duration;
   name?: string;
   description?: string;
   complete?: boolean;
 }
 
-// create a new task given a name and description
-export async function createTask(name: string, description: string) {
-  return post("task/create", { name, description });
+// Create a new task given name, duration and description
+export async function createTask(cfg: {
+  name: string;
+  description?: string;
+}): Promise<TaskID> {
+  const resp = await (await post("task/create", cfg)).json();
+  return resp.id;
 }
 
 // return all tasks for users current session
-export async function tasks(): Promise<Task[]> {
-  return get("task/get-all");
+export async function tasks(): Promise<Map<TaskID, Task>> {
+  const apiTasks: APITask[] = await get("task/get-all");
+  const result = new Map<TaskID, Task>();
+
+  apiTasks.forEach((apiTask) => {
+    result.set(apiTask.id, Task.parseFromAPI(apiTask));
+  });
+
+  return result;
 }
 
 // update whether a task has been completed
 export async function updateTask(update: TaskUpdate) {
-  return put("task/update", update);
+  return put("task/update", {
+    id: update.id,
+    name: update.name,
+    duration: update.duration?.minutes,
+    description: update.description,
+    complete: update.complete,
+  });
 }
 
 // delete a task given its id
-export async function deleteTask(id: number) {
+export async function deleteTask(id: TaskID) {
   return del("task/delete", { id });
 }
