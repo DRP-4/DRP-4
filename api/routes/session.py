@@ -20,13 +20,14 @@ def to_unix(date: datetime.datetime):
 
 def do_post_session_cleanup(user_id):
     # delete any sessions that were occuring
-    del_sess = delete(CurrentSession).where(CurrentSession.user_id == user_id)
-    db.session.execute(del_sess)
     del_slot = delete(Slot).where(Slot.user_id == user_id)
     db.session.execute(del_slot)
 
     del_tasks = delete(Task).where(Task.user_id == user_id, Task.completed != None)
     db.session.execute(del_tasks)
+
+    del_sess = delete(CurrentSession).where(CurrentSession.user_id == user_id)
+    db.session.execute(del_sess)
 
 
 @app.route("/api/session/new", methods=["POST"])
