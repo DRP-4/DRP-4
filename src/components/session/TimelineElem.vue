@@ -10,8 +10,10 @@ export default {
       required: true,
     },
     isWork: Boolean,
-    inProgress: Boolean,
-    ahead: Boolean,
+    completeness: {
+      type: Number,
+      required: true,
+    },
   },
 };
 </script>
@@ -25,14 +27,25 @@ export default {
       <div class="h-100" style="width: 4.375ex">
         <div
           :class="{
-            line: true,
+            'line-background': true,
             'h-100': true,
             break: !isWork,
             work: isWork,
-            'in-progress': inProgress,
-            ahead: ahead,
+            done: completeness >= 1.0,
           }"
-        ></div>
+        >
+          <div
+            v-if="completeness > 0.01 && completeness < 1.0"
+            :class="{
+              'line-progress': true,
+              break: !isWork,
+              work: isWork,
+            }"
+            :style="{
+              height: `${completeness * 100}%`,
+            }"
+          ></div>
+        </div>
       </div>
       <div class="me-auto w-100 h-100">
         <div class="card w-100 h-100">
@@ -46,7 +59,7 @@ export default {
 </template>
 
 <style stacked>
-.line {
+.line-background {
   width: 15px;
   margin-left: auto;
   margin-right: auto;
@@ -54,39 +67,60 @@ export default {
   border-radius: 7px;
 }
 
-.work {
+.line-progress {
+  width: 100%;
+  border: rounded;
+  border-radius: 7px;
+  opacity: initial;
+  overflow: hidden;
+}
+
+.line-background.work {
+  background-color: #4652988a;
+}
+
+.line-background.break {
+  background-color: #bc6d608a;
+}
+
+.line-background.work.done {
   background-color: #465298;
 }
 
-.break {
+.line-background.break.done {
   background-color: #bc6d60;
 }
 
-.in-progress {
-  animation: barberpole 10s linear infinite;
-}
-
-.work.in-progress {
+.line-progress.work {
   background: repeating-linear-gradient(
     45deg,
-    #606dbc,
-    #606dbc 10px,
+    #465298,
     #465298 10px,
-    #465298 20px
+    #323a6d 10px,
+    #323a6d 20px
   );
+  background-size: 28px 28px;
+  animation: progress 0.8s linear infinite;
 }
 
-.break.in-progress {
+.line-progress.break {
   background: repeating-linear-gradient(
     45deg,
     #bc6d60,
     #bc6d60 10px,
-    #985246 10px,
-    #985246 20px
+    #b55546 10px,
+    #b55546 20px
   );
+  background-size: 28px 28px;
+  animation: progress 0.8s linear infinite;
 }
 
-.ahead {
-  opacity: 0.5;
+@keyframes progress {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -28px 0px;
+  }
 }
 </style>

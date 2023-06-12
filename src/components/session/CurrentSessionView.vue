@@ -1,5 +1,5 @@
 <script lang="ts">
-import { jumpSeconds } from "@/api/debug";
+import { jumpSeconds, resetJumpCounter } from "@/api/debug";
 import { type Session, getSession, endSession } from "@/api/session";
 import { store } from "@/stores/time_jump";
 import TimelineElem from "./TimelineElem.vue";
@@ -28,13 +28,21 @@ export default {
         if (this.session === undefined) {
           return "auto";
         }
-        const sessionStart = Math.floor(this.session.start.getTime() / 1000);
-        const sessionEnd = Math.floor(this.session.end.getTime() / 1000);
-        const slotStart = Math.floor(start.getTime() / 1000);
-        const slotEnd = Math.floor(end.getTime() / 1000);
+        const sessionStart = this.session.start.getTime();
+        const sessionEnd = this.session.end.getTime();
+        const slotStart = start.getTime();
+        const slotEnd = end.getTime();
 
         const ratio = (slotEnd - slotStart) / (sessionEnd - sessionStart);
         return `${100 * ratio}%`;
+      },
+
+      calculateSlotCompleteness(start: Date, end: Date): number {
+        const slotStart = start.getTime();
+        const slotEnd = end.getTime();
+        const current = this.currentDate.getTime();
+        const ratio = (current - slotStart) / (slotEnd - slotStart);
+        return Math.min(Math.max(ratio, 0.0), 1.0);
       },
 
       isInProgress(start: Date, end: Date): boolean {
@@ -45,6 +53,10 @@ export default {
         return this.currentDate <= start;
       },
     };
+  },
+
+  async created() {
+    await resetJumpCounter();
   },
 
   async mounted() {
@@ -72,7 +84,6 @@ export default {
 
     async jump() {
       const JUMPING_BY = 900; // 15 minutes
-      store.jump(JUMPING_BY);
       await jumpSeconds(JUMPING_BY);
     },
   },
@@ -97,7 +108,7 @@ export default {
         End session
       </button>
     </div>
-    <div class="card-body">
+    <div class="card-body overflow-hidden">
       <!-- TODO: what should the key for the slot be? -->
       <TimelineElem
         v-for="slot in session?.slots"
@@ -105,8 +116,7 @@ export default {
         :starting-time="slot.start"
         :is-work="slot.is_work.valueOf()"
         :height="calculateSlotHeight(slot.start, slot.end)"
-        :in-progress="isInProgress(slot.start, slot.end)"
-        :ahead="isAhead(slot.start)"
+        :completeness="calculateSlotCompleteness(slot.start, slot.end)"
       >
         <small>{{ slot.is_work ? "Study slot" : "Break" }}</small>
       </TimelineElem>

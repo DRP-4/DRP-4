@@ -5,8 +5,12 @@ import util.now
 
 @app.route("/api/debug/jump-seconds", methods=["POST"])
 def jump():
-    if not running_as_dev:
-        abort(400)
     body = request.get_json()
-    util.now.delta += body["seconds"]
+    if (
+        not running_as_dev
+        or "seconds" not in body
+        or not isinstance(body["seconds"], int)
+    ):
+        abort(400)
+    util.now.delta = body["seconds"]
     return "", 204

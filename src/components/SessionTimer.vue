@@ -83,7 +83,6 @@ export default {
         (100 *
           (this.currentDate.getTime() - this.currentSlot.startDate.getTime())) /
         (60000 * this.sessionMinutes);
-      console.log(res);
       return res;
     },
   },
