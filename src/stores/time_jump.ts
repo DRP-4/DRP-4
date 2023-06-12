@@ -9,5 +9,5 @@ export const store = reactive({
 
   reset() {
     this.deltaInSeconds = 0;
-  }
+  },
 });
