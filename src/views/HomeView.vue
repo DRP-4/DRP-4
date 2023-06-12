@@ -5,6 +5,11 @@ import CurrentSessionView from "../components/session/CurrentSessionView.vue";
 import NewSessionSetup from "@/components/session/NewSessionSetup.vue";
 
 export default {
+  components: {
+    TaskListView,
+    CurrentSessionView,
+    NewSessionSetup,
+  },
   data() {
     return {
       fakeKey: 0,
@@ -14,12 +19,6 @@ export default {
 
   async created() {
     this.inSession = await isInSession();
-  },
-
-  components: {
-    TaskListView,
-    CurrentSessionView,
-    NewSessionSetup,
   },
 
   methods: {

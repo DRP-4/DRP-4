@@ -13,6 +13,11 @@ function dateWithDebugOffset() {
 }
 
 export default {
+  components: {
+    TimelineElem,
+  },
+
+  emits: ["done"],
   data() {
     return {
       session: undefined as Session | undefined,
@@ -44,7 +49,6 @@ export default {
 
   async mounted() {
     this.session = await getSession();
-    const self = this;
     this.interval = setInterval(() => {
       this.currentDate = dateWithDebugOffset();
       if (this.session !== undefined) {
@@ -60,10 +64,6 @@ export default {
     clearInterval(this.interval);
   },
 
-  components: {
-    TimelineElem,
-  },
-
   methods: {
     async endSession() {
       endSession();
@@ -76,8 +76,6 @@ export default {
       await jumpSeconds(JUMPING_BY);
     },
   },
-
-  emits: ["done"],
 };
 </script>
 
@@ -100,8 +98,10 @@ export default {
       </button>
     </div>
     <div class="card-body">
+      <!-- TODO: what should the key for the slot be? -->
       <TimelineElem
         v-for="slot in session?.slots"
+        :key="slot.start.getTime()"
         :starting-time="slot.start"
         :is-work="slot.is_work.valueOf()"
         :height="calculateSlotHeight(slot.start, slot.end)"

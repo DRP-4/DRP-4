@@ -3,6 +3,7 @@ import { Duration } from "@/api/duration";
 import { newSession } from "@/api/session";
 
 export default {
+  emits: ["done"],
   data() {
     return {
       duration: "60",
@@ -22,8 +23,6 @@ export default {
       this.$emit("done");
     },
   },
-
-  emits: ["done"],
 };
 </script>
 
