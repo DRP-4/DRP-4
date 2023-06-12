@@ -34,10 +34,10 @@ def do_post_session_cleanup(user_id):
 def start_session(user_id):
     body = request.get_json()
     if "duration" not in body:
-        abort(400)
+        return "Bad Request", 400
     duration = body["duration"]
     if not isinstance(duration, int) or duration < 0:
-        abort(400)
+        return "Bad Request", 400
 
     do_post_session_cleanup(user_id)
 
@@ -93,7 +93,7 @@ def current_session(user_id):
     query = db.select(CurrentSession).filter(CurrentSession.user_id == user_id)
     session = db.session.execute(query).scalars().first()
     if session is None:
-        abort(400)
+        return "File Not Found", 404
 
     session_start_unix = to_unix(session.start)
     session_end_unix = to_unix(session.end)
