@@ -122,7 +122,7 @@ def current_session(user_id):
                                 Task.user_id == user_id,
                                 Task.completed == slot_scalar.slot_id,
                             )
-                        ),
+                        ).scalars().all(),
                     )
                 ),
             },

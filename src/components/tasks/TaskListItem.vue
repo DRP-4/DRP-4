@@ -14,6 +14,10 @@ export default {
       type: Task,
       required: true,
     },
+    inSession: {
+      type: Boolean,
+      required: true,
+    }
   },
 
   emits: ["delete", "task:update"],
@@ -42,6 +46,17 @@ export default {
       updateTask({ id: this.task.id, description: this.editedDescription });
       this.editedDescription = undefined;
     },
+
+    complete(event: Event) {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        this.$emit("task:update", {
+          ...this.task,
+          complete: target.checked
+        });
+        updateTask({ id: this.task.id, complete: target.checked });
+      }
+    }
   },
 };
 </script>
@@ -50,9 +65,15 @@ export default {
   <div class="card">
     <!-- Card header (task name, delete button) -->
     <div class="card-header hstack">
+      <div class="form-check" v-if="inSession">
+        <input class="form-check-input" type="checkbox" :checked="task.complete" @input="complete">
+      </div>
       <input
         ref="nameInput"
         v-model="editedName"
+        :style="{
+          'text-decoration': task.complete ? 'line-through' : 'none',
+        }"
         class="name-input ms-auto"
         placeholder="Enter task name..."
         type="text"
