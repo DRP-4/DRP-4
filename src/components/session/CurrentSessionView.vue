@@ -28,13 +28,10 @@ export default {
         if (this.session === undefined) {
           return "auto";
         }
-        const sessionStart = this.session.start.getTime();
-        const sessionEnd = this.session.end.getTime();
         const slotStart = start.getTime();
         const slotEnd = end.getTime();
 
-        const ratio = (slotEnd - slotStart) / (sessionEnd - sessionStart);
-        return `${100 * ratio}%`;
+        return `${Math.log2((slotEnd - slotStart) / 60000) * 2}em`;
       },
 
       calculateSlotCompleteness(start: Date, end: Date): number {
