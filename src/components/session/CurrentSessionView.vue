@@ -28,13 +28,10 @@ export default {
         if (this.session === undefined) {
           return "auto";
         }
-        const sessionStart = this.session.start.getTime();
-        const sessionEnd = this.session.end.getTime();
         const slotStart = start.getTime();
         const slotEnd = end.getTime();
 
-        const ratio = (slotEnd - slotStart) / (sessionEnd - sessionStart);
-        return `${100 * ratio}%`;
+        return `${Math.log2((slotEnd - slotStart) / 60000) * 2}em`;
       },
 
       calculateSlotCompleteness(start: Date, end: Date): number {
@@ -94,8 +91,7 @@ export default {
   <div class="w-100 h-100 card">
     <div class="card-header hstack">
       <span class="me-auto"
-        >Session (in progress, current time
-        {{ currentDate.toTimeString() }})</span
+        >Session (Time is {{ currentDate.toLocaleTimeString("en-GB") }})</span
       >
       <button type="button" class="btn btn-sm btn-warning me-1" @click="jump">
         Skip 15 minutes ahead
@@ -108,7 +104,7 @@ export default {
         End session
       </button>
     </div>
-    <div class="card-body overflow-hidden">
+    <div class="card-body overflow-y-scroll overflow-x-visible">
       <!-- TODO: what should the key for the slot be? -->
       <TimelineElem
         v-for="slot in session?.slots"

@@ -49,7 +49,7 @@ export default {
       </div>
       <div class="me-auto w-100 h-100">
         <div class="card w-100 h-100">
-          <div class="card-body p-2 w-100 h-100 overflow-scroll">
+          <div class="card-body p-2 w-100 h-100 overflow-visible">
             <slot />
           </div>
         </div>
