@@ -91,8 +91,7 @@ export default {
   <div class="w-100 h-100 card">
     <div class="card-header hstack">
       <span class="me-auto"
-        >Session (in progress, current time
-        {{ currentDate.toTimeString() }})</span
+        >Session (Time is {{ currentDate.toLocaleTimeString("en-GB") }})</span
       >
       <button type="button" class="btn btn-sm btn-warning me-1" @click="jump">
         Skip 15 minutes ahead
