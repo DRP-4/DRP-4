@@ -77,7 +77,7 @@ export default {
         <NewTaskSetup @add="add" />
       </div>
     </div>
-    <div class="card-body tasks-overflow">
+    <div class="card-body overflow-y-scroll overflow-x-visible">
       <div v-for="task in sortedTaskList" :key="task.id" class="p-2">
         <TaskListItem
           :task="task"
@@ -88,18 +88,3 @@ export default {
     </div>
   </div>
 </template>
-
-<style scoped>
-.tasks-overflow {
-  overflow-y: scroll;
-}
-
-.tasks-overflow::-webkit-scrollbar {
-  display: none;
-}
-
-.tasks-overflow {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-</style>

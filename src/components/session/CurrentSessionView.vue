@@ -105,7 +105,7 @@ export default {
         End session
       </button>
     </div>
-    <div class="card-body overflow-hidden">
+    <div class="card-body overflow-y-scroll overflow-x-visible">
       <!-- TODO: what should the key for the slot be? -->
       <TimelineElem
         v-for="slot in session?.slots"
