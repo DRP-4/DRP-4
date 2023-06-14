@@ -1,6 +1,7 @@
 <script lang="ts">
 import { Task, updateTask } from "@/api/tasks";
 import { QuillEditor } from "@vueup/vue-quill";
+import { store as sessionStore } from "@/stores/session";
 import MagicUrl from "quill-magic-url";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 
@@ -12,6 +13,10 @@ export default {
   props: {
     task: {
       type: Task,
+      required: true,
+    },
+    inSession: {
+      type: Boolean,
       required: true,
     },
   },
@@ -42,6 +47,19 @@ export default {
       updateTask({ id: this.task.id, description: this.editedDescription });
       this.editedDescription = undefined;
     },
+
+    async complete(event: Event) {
+      const target = event.target;
+      if (target instanceof HTMLInputElement) {
+        this.$emit("task:update", {
+          ...this.task,
+          complete: target.checked,
+        });
+        await updateTask({ id: this.task.id, complete: target.checked });
+        // Refetch sessionStore to update completed task lists
+        await sessionStore.loadFromDB();
+      }
+    },
   },
 };
 </script>
@@ -50,9 +68,20 @@ export default {
   <div class="card">
     <!-- Card header (task name, delete button) -->
     <div class="card-header hstack">
+      <div v-if="inSession" class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          :checked="task.complete"
+          @input="complete"
+        />
+      </div>
       <input
         ref="nameInput"
         v-model="editedName"
+        :style="{
+          'text-decoration': task.complete ? 'line-through' : 'none',
+        }"
         class="name-input ms-auto"
         placeholder="Enter task name..."
         type="text"
