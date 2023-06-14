@@ -98,19 +98,20 @@ def update_task(user_id):
         if not isinstance(complete, bool):
             return "Bad Request", 400
 
-        prop_updates["complete"] = None
+        prop_updates["completed"] = None
         # find new complete val. If we just completed, its the id of the latest work
         # slot, else it's none/null
         if complete:
             # find the latest work slot
             now = instant()
             past_slots = (
-                db.session.select(Slot)
+                db.select(Slot)
                 .filter(Slot.user_id == user_id, Slot.start <= now, Slot.work)
-                .order_by(Slot.start)
+                .order_by(Slot.start.desc())
             )
-            latest_slot = db.session.execute(past_slots).scalars().all()[-1]
-            prop_updates["complete"] = latest_slot.slot_id
+            latest_slot = db.session.execute(past_slots).scalars().first()
+            if latest_slot is not None:
+                prop_updates["completed"] = latest_slot.slot_id
 
     if len(prop_updates) > 0:
         # make sure to still verify user id, so users can't modify others tasks

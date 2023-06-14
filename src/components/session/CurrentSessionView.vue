@@ -1,13 +1,15 @@
 <script lang="ts">
 import { jumpSeconds, resetJumpCounter } from "@/api/debug";
-import { type Session, getSession, endSession } from "@/api/session";
-import { store } from "@/stores/time_jump";
+import { endSession } from "@/api/session";
+import { store as timeJumpStore } from "@/stores/time_jump";
+import { store as sessionStore } from "@/stores/session";
+import { store as tasksStore } from "@/stores/tasks";
 import TimelineElem from "./TimelineElem.vue";
 
 function dateWithDebugOffset() {
   const thisInstant = new Date();
   const thisInstantUnix = thisInstant.getTime();
-  const newInstantUnix = thisInstantUnix + store.deltaInSeconds * 1000;
+  const newInstantUnix = thisInstantUnix + timeJumpStore.deltaInSeconds * 1000;
   const newInstant = new Date(newInstantUnix);
   return newInstant;
 }
@@ -20,12 +22,12 @@ export default {
   emits: ["done"],
   data() {
     return {
-      session: undefined as Session | undefined,
+      sessionStore,
       currentDate: dateWithDebugOffset(),
       interval: undefined as ReturnType<typeof setInterval> | undefined,
 
       calculateSlotHeight(start: Date, end: Date): string {
-        if (this.session === undefined) {
+        if (sessionStore.session === undefined) {
           return "auto";
         }
         const slotStart = start.getTime();
@@ -57,11 +59,11 @@ export default {
   },
 
   async mounted() {
-    this.session = await getSession();
+    await sessionStore.loadFromDB();
     this.interval = setInterval(() => {
       this.currentDate = dateWithDebugOffset();
-      if (this.session !== undefined) {
-        if (this.currentDate > this.session?.end) {
+      if (this.sessionStore.session !== undefined) {
+        if (this.currentDate > this.sessionStore.session?.end) {
           endSession();
           this.$emit("done");
         }
@@ -75,7 +77,8 @@ export default {
 
   methods: {
     async endSession() {
-      await endSession();
+      await sessionStore.endSession();
+      await tasksStore.loadFromDB();
       this.$emit("done");
     },
 
@@ -107,14 +110,32 @@ export default {
     <div class="card-body overflow-y-scroll overflow-x-visible">
       <!-- TODO: what should the key for the slot be? -->
       <TimelineElem
-        v-for="slot in session?.slots"
+        v-for="slot in sessionStore.session?.slots"
         :key="slot.start.getTime()"
         :starting-time="slot.start"
         :is-work="slot.is_work.valueOf()"
         :height="calculateSlotHeight(slot.start, slot.end)"
         :completeness="calculateSlotCompleteness(slot.start, slot.end)"
       >
-        <small>{{ slot.is_work ? "Study slot" : "Break" }}</small>
+        <div v-if="slot.is_work" class="vstack">
+          <h7 class="mb-1">Study slot</h7>
+          <small v-if="slot.completed_tasks.length > 0" class="mb-2 text-muted"
+            >Tasks completed</small
+          >
+          <ul
+            v-if="slot.completed_tasks.length > 0"
+            class="list-group list-group-sm"
+          >
+            <li
+              v-for="task in slot.completed_tasks"
+              :key="task.name"
+              class="list-group-item"
+            >
+              <small>{{ task.name }}</small>
+            </li>
+          </ul>
+        </div>
+        <div v-else>Break</div>
       </TimelineElem>
     </div>
   </div>

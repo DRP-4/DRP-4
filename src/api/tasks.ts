@@ -30,13 +30,7 @@ export class Task {
     this.complete = cfg?.complete === undefined ? false : cfg?.complete;
   }
 
-  public static parseFromAPI(apiTask: {
-    id: number;
-    name: string;
-    description: string | null;
-    duration: number | null;
-    completed: boolean;
-  }) {
+  public static parseFromAPI(apiTask: APITask) {
     return new Task(apiTask.id, apiTask.name, {
       description:
         apiTask.description === null ? undefined : apiTask.description,

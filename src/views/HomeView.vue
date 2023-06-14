@@ -38,7 +38,7 @@ export default {
 <template>
   <div class="vh-100 vw-100 p-4 hstack">
     <div class="h-100 w-50 me-3">
-      <TaskListView />
+      <TaskListView :in-session="inSession" />
     </div>
     <div class="h-100 w-50 ms-3">
       <CurrentSessionView v-if="inSession" @done="endSession" />

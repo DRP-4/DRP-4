@@ -15,7 +15,7 @@ describe("HelloWorld", () => {
       complete: false,
     };
 
-    const wrapper = mount(TaskListItem, { props: { task } });
+    const wrapper = mount(TaskListItem, { props: { task, inSession: true } });
     expect(wrapper.text()).toContain("Sample description");
   });
 
