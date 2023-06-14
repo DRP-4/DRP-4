@@ -36,6 +36,9 @@ export default {
       await newSession(parseInt(this.duration));
       this.$emit("done");
     },
+    async restoreSession() {
+      console.log("TODO: restore session");
+    },
   },
 };
 </script>
