@@ -115,11 +115,12 @@ export default {
         :height="calculateSlotHeight(slot.start, slot.end)"
         :completeness="calculateSlotCompleteness(slot.start, slot.end)"
       >
-        <div v-if="slot.is_work">
-          Study slot
-          <ul>
-            <li v-for="task in slot.completed_tasks" :key="task.name">
-              {{ task.name }}
+        <div v-if="slot.is_work" class="vstack">
+          <h7 class="mb-1">Study slot</h7>
+          <small class="mb-2 text-muted" v-if="slot.completed_tasks.length > 0">Tasks completed</small>
+          <ul class="list-group list-group-sm" v-if="slot.completed_tasks.length > 0">
+            <li v-for="task in slot.completed_tasks" :key="task.name" class="list-group-item">
+              <small>{{ task.name }}</small>
             </li>
           </ul>
         </div>
