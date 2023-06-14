@@ -6,9 +6,16 @@ import { tasks, deleteTask, Task, type TaskID } from "@/api/tasks";
 import { createTask } from "@/api/tasks";
 
 export default {
+
   components: {
     TaskListItem,
     NewTaskSetup,
+  },
+  props: {
+    inSession: {
+      type: Boolean,
+      required: true,
+    }
   },
 
   data() {
@@ -81,6 +88,7 @@ export default {
       <div v-for="task in sortedTaskList" :key="task.id" class="p-2">
         <TaskListItem
           :task="task"
+          :in-session="inSession"
           @task:update="(newTask) => update(newTask)"
           @delete="remove(task.id)"
         />
