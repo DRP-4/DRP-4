@@ -115,7 +115,11 @@ export default {
         :height="calculateSlotHeight(slot.start, slot.end)"
         :completeness="calculateSlotCompleteness(slot.start, slot.end)"
       >
-        <small>{{ slot.is_work ? "Study slot" : "Break" }}</small>
+        <small
+          >{{ slot.is_work ? "Study slot" : "Break" }}
+          <div></div>
+          <div></div>
+        </small>
       </TimelineElem>
     </div>
   </div>

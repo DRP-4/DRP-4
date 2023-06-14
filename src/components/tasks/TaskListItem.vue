@@ -18,7 +18,7 @@ export default {
     inSession: {
       type: Boolean,
       required: true,
-    }
+    },
   },
 
   emits: ["delete", "task:update"],
@@ -53,13 +53,13 @@ export default {
       if (target instanceof HTMLInputElement) {
         this.$emit("task:update", {
           ...this.task,
-          complete: target.checked
+          complete: target.checked,
         });
         updateTask({ id: this.task.id, complete: target.checked });
         // Refetch sessionStore to update completed task lists
         sessionStore.loadFromDB();
       }
-    }
+    },
   },
 };
 </script>
@@ -69,7 +69,12 @@ export default {
     <!-- Card header (task name, delete button) -->
     <div class="card-header hstack">
       <div v-if="inSession" class="form-check">
-        <input class="form-check-input" type="checkbox" :checked="task.complete" @input="complete">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          :checked="task.complete"
+          @input="complete"
+        />
       </div>
       <input
         ref="nameInput"

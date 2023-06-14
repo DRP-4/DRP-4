@@ -13,5 +13,5 @@ export const store = reactive({
       endSession();
     }
     this.session = undefined;
-  }
+  },
 });

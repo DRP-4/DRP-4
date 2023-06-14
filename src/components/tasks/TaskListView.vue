@@ -6,7 +6,6 @@ import { tasks, deleteTask, Task, type TaskID } from "@/api/tasks";
 import { createTask } from "@/api/tasks";
 
 export default {
-
   components: {
     TaskListItem,
     NewTaskSetup,
@@ -15,7 +14,7 @@ export default {
     inSession: {
       type: Boolean,
       required: true,
-    }
+    },
   },
 
   data() {
