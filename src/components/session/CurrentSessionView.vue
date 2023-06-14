@@ -3,6 +3,7 @@ import { jumpSeconds, resetJumpCounter } from "@/api/debug";
 import { endSession } from "@/api/session";
 import { store as timeJumpStore } from "@/stores/time_jump";
 import { store as sessionStore } from "@/stores/session";
+import { store as tasksStore } from "@/stores/tasks";
 import TimelineElem from "./TimelineElem.vue";
 
 function dateWithDebugOffset() {
@@ -76,7 +77,8 @@ export default {
 
   methods: {
     async endSession() {
-      sessionStore.endSession();
+      await sessionStore.endSession();
+      await tasksStore.loadFromDB()
       this.$emit("done");
     },
 

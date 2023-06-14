@@ -8,9 +8,9 @@ export const store = reactive({
     this.session = await getSession();
   },
 
-  endSession() {
+  async endSession() {
     if (this.session !== undefined) {
-      endSession();
+      await endSession();
     }
     this.session = undefined;
   },
