@@ -2,7 +2,7 @@ import datetime
 import time
 
 from flask import request, abort
-from sqlalchemy import delete
+from sqlalchemy import delete, update
 
 from app import app
 from models import db
@@ -26,8 +26,7 @@ def do_post_session_cleanup(user_id):
     del_tasks = delete(Task).where(Task.user_id == user_id, Task.completed != None)
     db.session.execute(del_tasks)
 
-    del_sess = delete(CurrentSession).where(CurrentSession.user_id == user_id)
-    db.session.execute(del_sess)
+    # don't delete the old session, so we can reuse it's settings
 
 
 @app.route("/api/session/new", methods=["POST"])
@@ -41,6 +40,9 @@ def start_session(user_id):
         return "Bad Request", 400
 
     do_post_session_cleanup(user_id)
+    # delete old session
+    del_sess = delete(CurrentSession).where(CurrentSession.user_id == user_id)
+    db.session.execute(del_sess)
 
     # add new session to the database
     start = instant()
@@ -74,8 +76,16 @@ def start_session(user_id):
 
 @app.route("/api/session/end", methods=["POST"])
 @with_user_id
-def end_session(used_id):
-    do_post_session_cleanup(used_id)
+def end_session(user_id):
+    do_post_session_cleanup(user_id)
+    # outdate old session - set it's end point to now
+    outdate_sess = (
+        update(CurrentSession)
+        .where(CurrentSession.user_id == user_id)
+        .values(end=datetime.datetime.now())
+    )
+    db.session.execute(outdate_sess)
+
     db.session.commit()
     return "", 204
 
@@ -91,7 +101,10 @@ def is_active(user_id):
 @app.route("/api/session/current", methods=["GET"])
 @with_user_id
 def current_session(user_id):
-    query = db.select(CurrentSession).filter(CurrentSession.user_id == user_id)
+    query = db.select(CurrentSession).filter(
+        CurrentSession.user_id == user_id
+        and CurrentSession.end > datetime.datetime.now()
+    )
     session = db.session.execute(query).scalars().first()
     if session is None:
         return "File Not Found", 404
