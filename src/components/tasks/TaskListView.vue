@@ -3,7 +3,7 @@ import TaskListItem from "./TaskListItem.vue";
 import NewTaskSetup from "./NewTaskSetup.vue";
 import MagicUrl from "quill-magic-url";
 import { type TaskID } from "@/api/tasks";
-import { store as sessionStore } from "@/stores/session"
+import { store as sessionStore } from "@/stores/session";
 import { store as tasksStore } from "@/stores/tasks";
 
 export default {
@@ -61,12 +61,16 @@ export default {
         aria-labelledby="addNewTaskLabel"
         aria-hidden="true"
       >
-        <NewTaskSetup @add="newTask => tasksStore.add(newTask)" />
+        <NewTaskSetup @add="(newTask) => tasksStore.add(newTask)" />
       </div>
     </div>
 
     <div class="card-body overflow-y-scroll overflow-x-visible">
-      <div v-for="task in tasksStore.sortedTasksList()" :key="task.id" class="p-2">
+      <div
+        v-for="task in tasksStore.sortedTasksList()"
+        :key="task.id"
+        class="p-2"
+      >
         <TaskListItem
           :task="task"
           :in-session="inSession"

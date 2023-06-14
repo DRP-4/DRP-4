@@ -27,5 +27,5 @@ export const store = reactive({
 
   sortedTasksList(): Task[] {
     return [...this.tasks.values()].sort((l, r) => l.id - r.id);
-  }
+  },
 });
