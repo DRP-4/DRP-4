@@ -4,6 +4,8 @@ import NewTaskSetup from "./NewTaskSetup.vue";
 import MagicUrl from "quill-magic-url";
 import { tasks, deleteTask, Task, type TaskID } from "@/api/tasks";
 import { createTask } from "@/api/tasks";
+import { store as sessionStore } from "@/stores/session"
+import { store as timeJumpStore } from "@/stores/time_jump";
 
 export default {
   components: {
@@ -50,9 +52,10 @@ export default {
       this.tasks.set(task.id, task);
     },
 
-    remove(id: TaskID) {
+    async remove(id: TaskID) {
       this.tasks.delete(id);
-      deleteTask(id);
+      await deleteTask(id);
+      await sessionStore.loadFromDB();
     },
   },
 };

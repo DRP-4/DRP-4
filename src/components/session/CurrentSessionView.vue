@@ -115,11 +115,15 @@ export default {
         :height="calculateSlotHeight(slot.start, slot.end)"
         :completeness="calculateSlotCompleteness(slot.start, slot.end)"
       >
-        <small
-          >{{ slot.is_work ? "Study slot" : "Break" }}
-          <div></div>
-          <div></div>
-        </small>
+        <div v-if="slot.is_work">
+          Study slot
+          <ul>
+            <li v-for="task in slot.completed_tasks" :key="task.name">
+              {{ task.name }}
+            </li>
+          </ul>
+        </div>
+        <div v-else>Break</div>
       </TimelineElem>
     </div>
   </div>

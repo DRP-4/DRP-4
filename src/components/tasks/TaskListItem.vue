@@ -48,16 +48,16 @@ export default {
       this.editedDescription = undefined;
     },
 
-    complete(event: Event) {
+    async complete(event: Event) {
       const target = event.target;
       if (target instanceof HTMLInputElement) {
         this.$emit("task:update", {
           ...this.task,
           complete: target.checked,
         });
-        updateTask({ id: this.task.id, complete: target.checked });
+        await updateTask({ id: this.task.id, complete: target.checked });
         // Refetch sessionStore to update completed task lists
-        sessionStore.loadFromDB();
+        await sessionStore.loadFromDB();
       }
     },
   },
