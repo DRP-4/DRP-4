@@ -101,9 +101,10 @@ def is_active(user_id):
 @app.route("/api/session/current", methods=["GET"])
 @with_user_id
 def current_session(user_id):
-    query = db.select(CurrentSession).filter(
-        CurrentSession.user_id == user_id
-        and CurrentSession.end > datetime.datetime.now()
+    query = (
+        db.select(CurrentSession)
+        .filter(CurrentSession.user_id == user_id)
+        .filter(CurrentSession.end > datetime.datetime.now())
     )
     session = db.session.execute(query).scalars().first()
     if session is None:
