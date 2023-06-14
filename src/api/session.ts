@@ -9,6 +9,7 @@ export interface Slot {
 }
 
 export interface Session {
+  duration: number;
   start: Date;
   end: Date;
   slots: Slot[];
@@ -33,6 +34,7 @@ export async function endSession() {
 // get the current session for this user
 export async function getSession(): Promise<Session> {
   const apiSession: {
+    duration: number;
     start_unix: number;
     end_unix: number;
     slots: {
@@ -44,6 +46,7 @@ export async function getSession(): Promise<Session> {
   } = await get("session/current");
 
   return {
+    duration: apiSession.duration,
     start: new Date(apiSession.start_unix * 1000),
     end: new Date(apiSession.end_unix * 1000),
     slots: apiSession.slots.map((apiSlot) => {

@@ -48,7 +48,7 @@ def start_session(user_id):
     start = instant()
     end = start + datetime.timedelta(minutes=duration)
 
-    session = CurrentSession(user_id=user_id, start=start, end=end)
+    session = CurrentSession(user_id=user_id, start=start, end=end, duration=duration)
     db.session.add(session)
 
     # slot calculation algorithm
@@ -93,7 +93,11 @@ def end_session(user_id):
 @app.route("/api/session/active", methods=["GET"])
 @with_user_id
 def is_active(user_id):
-    query = db.select(CurrentSession).filter(CurrentSession.user_id == user_id)
+    query = (
+        db.select(CurrentSession)
+        .filter(CurrentSession.user_id == user_id)
+        .filter(CurrentSession.end > datetime.datetime.now())
+    )
     session = db.session.execute(query).scalars().first()
     return json_response({"active": session is not None})
 
@@ -101,17 +105,14 @@ def is_active(user_id):
 @app.route("/api/session/current", methods=["GET"])
 @with_user_id
 def current_session(user_id):
-    query = (
-        db.select(CurrentSession)
-        .filter(CurrentSession.user_id == user_id)
-        .filter(CurrentSession.end > datetime.datetime.now())
-    )
+    query = db.select(CurrentSession).filter(CurrentSession.user_id == user_id)
     session = db.session.execute(query).scalars().first()
     if session is None:
         return "File Not Found", 404
 
     session_start_unix = to_unix(session.start)
     session_end_unix = to_unix(session.end)
+    duration = session.duration
 
     slots_query = db.select(Slot).filter(Slot.user_id == user_id)
     slots_scalar = db.session.execute(slots_query).scalars().all()
@@ -147,5 +148,10 @@ def current_session(user_id):
     )
 
     return json_response(
-        {"start_unix": session_start_unix, "end_unix": session_end_unix, "slots": slots}
+        {
+            "duration": duration,
+            "start_unix": session_start_unix,
+            "end_unix": session_end_unix,
+            "slots": slots,
+        }
     )

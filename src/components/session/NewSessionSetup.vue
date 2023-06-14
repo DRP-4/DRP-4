@@ -37,7 +37,9 @@ export default {
       this.$emit("done");
     },
     async restoreSession() {
-      console.log("TODO: restore session");
+      const pastSession = await getSession();
+      await newSession(pastSession.duration);
+      this.$emit("done");
     },
   },
 };
