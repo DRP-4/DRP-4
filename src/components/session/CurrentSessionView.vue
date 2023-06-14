@@ -75,7 +75,7 @@ export default {
 
   methods: {
     async endSession() {
-      endSession();
+      await endSession();
       this.$emit("done");
     },
 
