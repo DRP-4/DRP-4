@@ -36,6 +36,11 @@ export default {
       this.taskDescription = "";
       this.includeDescription = false;
     },
+
+    focus() {
+      const el = this.$refs.newTaskName as HTMLInputElement;
+      el.focus();
+    },
   },
 };
 </script>
@@ -56,7 +61,7 @@ export default {
       <div class="modal-body">
         <form class="mb-3">
           <input
-            id="newTaskName"
+            ref="newTaskName"
             v-model="taskName"
             type="text"
             :class="{
