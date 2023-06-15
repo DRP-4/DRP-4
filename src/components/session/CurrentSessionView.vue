@@ -4,6 +4,7 @@ import { endSession } from "@/api/session";
 import { store as timeJumpStore } from "@/stores/time_jump";
 import { store as sessionStore } from "@/stores/session";
 import { store as tasksStore } from "@/stores/tasks";
+import { type Slot } from "@/api/session";
 import TimelineElem from "./TimelineElem.vue";
 import PostSessionFeedback from "@/components/PostSessionFeedback.vue";
 
@@ -28,14 +29,20 @@ export default {
       currentDate: dateWithDebugOffset(),
       interval: undefined as ReturnType<typeof setInterval> | undefined,
 
-      calculateSlotHeight(start: Date, end: Date): string {
+      calculateSlotHeight(slot: Slot): number {
+        const { start, end } = slot;
         if (sessionStore.session === undefined) {
-          return "auto";
+          return 10;
         }
         const slotStart = start.getTime();
         const slotEnd = end.getTime();
 
-        return `${Math.log2((slotEnd - slotStart) / 60000) * 2}em`;
+        // TODO: This isn't right when `slot.completed_tasks.length` is >~5, but who does
+        // 7 tasks in a session.
+        return (
+          Math.log2((slotEnd - slotStart) / 60000) * 2 +
+          slot.completed_tasks.length * 2
+        );
       },
 
       calculateSlotCompleteness(start: Date, end: Date): number {
@@ -116,7 +123,7 @@ export default {
         :key="slot.start.getTime()"
         :starting-time="slot.start"
         :is-work="slot.is_work.valueOf()"
-        :height="calculateSlotHeight(slot.start, slot.end)"
+        :height="calculateSlotHeight(slot)"
         :completeness="calculateSlotCompleteness(slot.start, slot.end)"
       >
         <div v-if="slot.is_work" class="vstack h-100">
