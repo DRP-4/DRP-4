@@ -6,6 +6,7 @@ export interface Slot {
   start: Date;
   end: Date;
   is_work: Boolean;
+  feedback: number;
   completed_tasks: Task[];
 }
 
@@ -43,6 +44,7 @@ export async function getSession(): Promise<Session> {
       start_unix: number;
       end_unix: number;
       is_work: boolean;
+      feedback: number;
       completed_tasks: APITask[];
     }[];
   } = await get("session/current");
@@ -57,10 +59,16 @@ export async function getSession(): Promise<Session> {
         start: new Date(apiSlot.start_unix * 1000),
         end: new Date(apiSlot.end_unix * 1000),
         is_work: apiSlot.is_work,
+        feedback: apiSlot.feedback,
         completed_tasks: apiSlot.completed_tasks.map((apiTask) =>
           Task.parseFromAPI(apiTask)
         ),
       };
     }),
   };
+}
+
+// give feedback for a slot
+export async function giveFeedback(slot_id: number, feedback: number) {
+  return post("slot/review", { slot_id, feedback });
 }

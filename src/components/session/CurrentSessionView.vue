@@ -1,6 +1,6 @@
 <script lang="ts">
 import { jumpSeconds, resetJumpCounter } from "@/api/debug";
-import { endSession } from "@/api/session";
+import { endSession, giveFeedback } from "@/api/session";
 import { store as timeJumpStore } from "@/stores/time_jump";
 import { store as sessionStore } from "@/stores/session";
 import { store as tasksStore } from "@/stores/tasks";
@@ -88,6 +88,10 @@ export default {
       const JUMPING_BY = 900; // 15 minutes
       await jumpSeconds(JUMPING_BY);
     },
+
+    async slotFeedback(slot_id: number, feedback: number) {
+      await giveFeedback(slot_id, feedback);
+    },
   },
 };
 </script>
@@ -159,16 +163,19 @@ export default {
                   console.log('green');
                   console.log(index / 2 + 1);
                   console.log(slot.slot_id);
+                  slotFeedback(slot.slot_id, 0);
                 "
                 @neutral="
                   console.log('neutral');
                   console.log(index / 2 + 1);
                   console.log(slot.slot_id);
+                  slotFeedback(slot.slot_id, 1);
                 "
                 @dissatisfied="
                   console.log('bad');
                   console.log(index / 2 + 1);
                   console.log(slot.slot_id);
+                  slotFeedback(slot.slot_id, 2);
                 "
               />
             </div>
