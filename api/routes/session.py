@@ -2,7 +2,7 @@ import datetime
 import time
 
 from flask import request, abort
-from sqlalchemy import delete
+from sqlalchemy import delete, update
 
 from app import app
 from models import db
@@ -26,8 +26,7 @@ def do_post_session_cleanup(user_id):
     del_tasks = delete(Task).where(Task.user_id == user_id, Task.completed != None)
     db.session.execute(del_tasks)
 
-    del_sess = delete(CurrentSession).where(CurrentSession.user_id == user_id)
-    db.session.execute(del_sess)
+    # don't delete the old session, so we can reuse it's settings
 
 
 @app.route("/api/session/new", methods=["POST"])
@@ -41,12 +40,15 @@ def start_session(user_id):
         return "Bad Request", 400
 
     do_post_session_cleanup(user_id)
+    # delete old session
+    del_sess = delete(CurrentSession).where(CurrentSession.user_id == user_id)
+    db.session.execute(del_sess)
 
     # add new session to the database
     start = instant()
     end = start + datetime.timedelta(minutes=duration)
 
-    session = CurrentSession(user_id=user_id, start=start, end=end)
+    session = CurrentSession(user_id=user_id, start=start, end=end, duration=duration)
     db.session.add(session)
 
     # slot calculation algorithm
@@ -74,8 +76,16 @@ def start_session(user_id):
 
 @app.route("/api/session/end", methods=["POST"])
 @with_user_id
-def end_session(used_id):
-    do_post_session_cleanup(used_id)
+def end_session(user_id):
+    do_post_session_cleanup(user_id)
+    # outdate old session - set it's end point to now
+    outdate_sess = (
+        update(CurrentSession)
+        .where(CurrentSession.user_id == user_id)
+        .values(end=datetime.datetime.now())
+    )
+    db.session.execute(outdate_sess)
+
     db.session.commit()
     return "", 204
 
@@ -83,7 +93,11 @@ def end_session(used_id):
 @app.route("/api/session/active", methods=["GET"])
 @with_user_id
 def is_active(user_id):
-    query = db.select(CurrentSession).filter(CurrentSession.user_id == user_id)
+    query = (
+        db.select(CurrentSession)
+        .filter(CurrentSession.user_id == user_id)
+        .filter(CurrentSession.end > datetime.datetime.now())
+    )
     session = db.session.execute(query).scalars().first()
     return json_response({"active": session is not None})
 
@@ -98,6 +112,7 @@ def current_session(user_id):
 
     session_start_unix = to_unix(session.start)
     session_end_unix = to_unix(session.end)
+    duration = session.duration
 
     slots_query = db.select(Slot).filter(Slot.user_id == user_id)
     slots_scalar = db.session.execute(slots_query).scalars().all()
@@ -133,5 +148,10 @@ def current_session(user_id):
     )
 
     return json_response(
-        {"start_unix": session_start_unix, "end_unix": session_end_unix, "slots": slots}
+        {
+            "duration": duration,
+            "start_unix": session_start_unix,
+            "end_unix": session_end_unix,
+            "slots": slots,
+        }
     )

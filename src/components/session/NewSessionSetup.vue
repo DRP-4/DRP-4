@@ -1,12 +1,13 @@
 <script lang="ts">
 import { Duration } from "@/api/duration";
-import { newSession } from "@/api/session";
+import { newSession, getSession } from "@/api/session";
 
 export default {
   emits: ["done"],
   data() {
     return {
       duration: "60",
+      savedSession: false,
     };
   },
 
@@ -17,9 +18,27 @@ export default {
     },
   },
 
+  mounted(this): void {
+    // if get session fails with a 404, there is no previous session in the DB
+    // for us to load settings from
+    getSession().then(
+      () => {
+        this.savedSession = true;
+      },
+      () => {
+        this.savedSession = false;
+      }
+    );
+  },
+
   methods: {
     async createSession() {
       await newSession(parseInt(this.duration));
+      this.$emit("done");
+    },
+    async restoreSession() {
+      const pastSession = await getSession();
+      await newSession(pastSession.duration);
       this.$emit("done");
     },
   },
@@ -48,10 +67,18 @@ export default {
         <div class="hstack">
           <button
             type="button"
-            class="btn btn-sm btn-success ms-1"
+            class="btn btn-sm btn-outline-success ms-1"
             @click="createSession"
           >
             Create session
+          </button>
+          <button
+            v-if="savedSession"
+            type="button"
+            class="btn btn-sm btn-success ms-1"
+            @click="restoreSession"
+          >
+            Restore session
           </button>
         </div>
       </div>
