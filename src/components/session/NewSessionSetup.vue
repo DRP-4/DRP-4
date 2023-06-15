@@ -59,7 +59,7 @@ export default {
             v-model="duration"
             class="form-range"
             type="range"
-            min="20"
+            min="5"
             max="300"
             step="5"
           />
