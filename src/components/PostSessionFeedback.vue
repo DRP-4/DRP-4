@@ -20,22 +20,26 @@ export default {
 </script>
 
 <template>
-  <div class="centered">
-    <div class="form-horizontal border p-3 rounded">
-      <div class="centered">
-        <h2>How was session {{ name }}?</h2>
-      </div>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="form-horizontal p-3 rounded">
+          <div class="centered">
+            <h2>How was session {{ name }}?</h2>
+          </div>
 
-      <div class="centered">
-        <div class="emotions">
-          <div class="face" @click="$emit('satisfied')">
-            <Satisifed />
-          </div>
-          <div class="face" @click="$emit('neutral')">
-            <Neutral />
-          </div>
-          <div class="face" @click="$emit('dissatisfied')">
-            <Dissatisfied />
+          <div class="centered">
+            <div class="emotions">
+              <div class="face" @click="$emit('satisfied')">
+                <Satisifed />
+              </div>
+              <div class="face" @click="$emit('neutral')">
+                <Neutral />
+              </div>
+              <div class="face" @click="$emit('dissatisfied')">
+                <Dissatisfied />
+              </div>
+            </div>
           </div>
         </div>
       </div>
