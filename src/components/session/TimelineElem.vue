@@ -6,7 +6,7 @@ export default {
       required: true,
     },
     height: {
-      type: String,
+      type: Number,
       required: true,
     },
     isWork: Boolean,
@@ -19,7 +19,7 @@ export default {
 </script>
 
 <template>
-  <div class="w-100 d-flex flex-column" :style="{ height }">
+  <div class="w-100 d-flex flex-column" :style="`height: ${height}em`">
     <div>
       <small>{{ startingTime.toTimeString().slice(0, 5) }}</small>
     </div>
@@ -119,6 +119,7 @@ export default {
   0% {
     background-position: 0 0;
   }
+
   100% {
     background-position: -28px 0px;
   }
