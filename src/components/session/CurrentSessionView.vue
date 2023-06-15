@@ -5,6 +5,7 @@ import { store as timeJumpStore } from "@/stores/time_jump";
 import { store as sessionStore } from "@/stores/session";
 import { store as tasksStore } from "@/stores/tasks";
 import TimelineElem from "./TimelineElem.vue";
+import PostSessionFeedback from "@/components/PostSessionFeedback.vue";
 
 function dateWithDebugOffset() {
   const thisInstant = new Date();
@@ -17,6 +18,7 @@ function dateWithDebugOffset() {
 export default {
   components: {
     TimelineElem,
+    PostSessionFeedback,
   },
 
   emits: ["done"],
@@ -110,15 +112,15 @@ export default {
     <div class="card-body overflow-y-scroll overflow-x-visible">
       <!-- TODO: what should the key for the slot be? -->
       <TimelineElem
-        v-for="slot in sessionStore.session?.slots"
+        v-for="(slot, index) in sessionStore.session?.slots"
         :key="slot.start.getTime()"
         :starting-time="slot.start"
         :is-work="slot.is_work.valueOf()"
         :height="calculateSlotHeight(slot.start, slot.end)"
         :completeness="calculateSlotCompleteness(slot.start, slot.end)"
       >
-        <div v-if="slot.is_work" class="vstack">
-          <h7 class="mb-1">Study slot</h7>
+        <div v-if="slot.is_work" class="vstack h-100">
+          <h6 class="mb-1">Study slot</h6>
           <small v-if="slot.completed_tasks.length > 0" class="mb-2 text-muted"
             >Tasks completed</small
           >
@@ -134,6 +136,40 @@ export default {
               <small>{{ task.name }}</small>
             </li>
           </ul>
+
+          <div class="mt-auto">
+            <button
+              type="button"
+              class="btn btn-sm btn-primary"
+              data-bs-toggle="modal"
+              :data-bs-target="'#reviewbutt_' + (index / 2 + 1)"
+            >
+              Review Session {{ index / 2 + 1 }}
+            </button>
+            <div
+              :id="'reviewbutt_' + (index / 2 + 1)"
+              class="modal fade"
+              tabindex="-1"
+              role="dialog"
+              aria-hidden="true"
+            >
+              <PostSessionFeedback
+                :name="(index / 2 + 1).toString()"
+                @satisfied="
+                  console.log('green');
+                  console.log(index / 2 + 1);
+                "
+                @neutral="
+                  console.log('neutral');
+                  console.log(index / 2 + 1);
+                "
+                @dissatisfied="
+                  console.log('bad');
+                  console.log(index / 2 + 1);
+                "
+              />
+            </div>
+          </div>
         </div>
         <div v-else>Break</div>
       </TimelineElem>
