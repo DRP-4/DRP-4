@@ -118,7 +118,7 @@ export default {
         :completeness="calculateSlotCompleteness(slot.start, slot.end)"
       >
         <div v-if="slot.is_work" class="vstack">
-          <h7 class="mb-1">Study slot</h7>
+          <h6 class="mb-1">Study slot</h6>
           <small v-if="slot.completed_tasks.length > 0" class="mb-2 text-muted"
             >Tasks completed</small
           >
