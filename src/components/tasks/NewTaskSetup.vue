@@ -47,7 +47,7 @@ export default {
 
 <template>
   <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
+    <form class="modal-content" onsubmit="return false;">
       <div class="modal-header">
         <h5 id="addNewTaskLabel" class="modal-title">Add new task</h5>
         <button
@@ -59,7 +59,7 @@ export default {
         ></button>
       </div>
       <div class="modal-body">
-        <form class="mb-3">
+        <div class="mb-3">
           <input
             ref="newTaskName"
             v-model="taskName"
@@ -70,7 +70,7 @@ export default {
             }"
             placeholder="Task name (required)"
           />
-        </form>
+        </div>
         <div class="card">
           <div class="card-header">
             <div class="form-check">
@@ -106,7 +106,7 @@ export default {
           Close
         </button>
         <button
-          type="button"
+          type="submit"
           class="btn btn-success"
           data-bs-dismiss="modal"
           :disabled="taskName.trim().length == 0"
@@ -115,6 +115,6 @@ export default {
           Add new task
         </button>
       </div>
-    </div>
+    </form>
   </div>
 </template>
