@@ -158,14 +158,17 @@ export default {
                 @satisfied="
                   console.log('green');
                   console.log(index / 2 + 1);
+                  console.log(slot.slot_id);
                 "
                 @neutral="
                   console.log('neutral');
                   console.log(index / 2 + 1);
+                  console.log(slot.slot_id);
                 "
                 @dissatisfied="
                   console.log('bad');
                   console.log(index / 2 + 1);
+                  console.log(slot.slot_id);
                 "
               />
             </div>
