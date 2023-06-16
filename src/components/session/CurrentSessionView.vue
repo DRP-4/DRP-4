@@ -150,7 +150,7 @@ export default {
           </ul>
 
           <div class="mt-auto hstack">
-            <div class="mt-auto" v-if="slot.end <= currentDate.getTime()">
+            <div class="mt-auto" v-if="slot.end <= currentDate">
               <button
                 type="button"
                 class="btn btn-sm btn-primary"
