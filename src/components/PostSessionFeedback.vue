@@ -33,24 +33,24 @@ export default {
               <button
                 type="button"
                 class="btn face close"
-                @click="$emit('satisfied')"
                 data-bs-dismiss="modal"
+                @click="$emit('satisfied')"
               >
                 <Satisifed />
               </button>
               <button
                 type="button"
                 class="btn face close"
-                @click="$emit('neutral')"
                 data-bs-dismiss="modal"
+                @click="$emit('neutral')"
               >
                 <Neutral />
               </button>
               <button
                 type="button"
                 class="btn face close"
-                @click="$emit('dissatisfied')"
                 data-bs-dismiss="modal"
+                @click="$emit('dissatisfied')"
               >
                 <Dissatisfied />
               </button>

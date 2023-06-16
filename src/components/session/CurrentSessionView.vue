@@ -150,7 +150,7 @@ export default {
           </ul>
 
           <div class="mt-auto hstack">
-            <div class="mt-auto" v-if="slot.end <= currentDate">
+            <div v-if="slot.end <= currentDate" class="mt-auto">
               <button
                 type="button"
                 class="btn btn-sm btn-primary"
@@ -175,11 +175,11 @@ export default {
               </div>
             </div>
             <div class="ms-auto">
-              <div class="emotions" v-if="slot.feedback == 1">
+              <div v-if="slot.feedback == 1" class="emotions">
                 <Satisfied />
               </div>
-              <div class="emotions" v-if="slot.feedback == 2"><Neutral /></div>
-              <div class="emotions" v-if="slot.feedback == 3">
+              <div v-if="slot.feedback == 2" class="emotions"><Neutral /></div>
+              <div v-if="slot.feedback == 3" class="emotions">
                 <Dissatisfied />
               </div>
             </div>
