@@ -20,7 +20,7 @@ def review_slot(user_id):
     slot_id = body["slot_id"]
 
     feedback = body["feedback"]
-    if feedback < 0 or feedback > 2:
+    if feedback < 1 or feedback > 3:
         return "Bad Request", 400
 
     # check this slot is ours, and that the end has passed

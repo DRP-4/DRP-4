@@ -7,6 +7,10 @@ import { store as tasksStore } from "@/stores/tasks";
 import TimelineElem from "./TimelineElem.vue";
 import PostSessionFeedback from "@/components/PostSessionFeedback.vue";
 
+import Satisfied from "@/components/icons/SatisfiedFace.vue";
+import Neutral from "@/components/icons/NeutralFace.vue";
+import Dissatisfied from "@/components/icons/DissatisfiedFace.vue";
+
 function dateWithDebugOffset() {
   const thisInstant = new Date();
   const thisInstantUnix = thisInstant.getTime();
@@ -19,6 +23,9 @@ export default {
   components: {
     TimelineElem,
     PostSessionFeedback,
+    Satisfied,
+    Neutral,
+    Dissatisfied,
   },
 
   emits: ["done"],
@@ -91,6 +98,7 @@ export default {
 
     async slotFeedback(slot_id: number, feedback: number) {
       await giveFeedback(slot_id, feedback);
+      await sessionStore.loadFromDB();
     },
   },
 };
@@ -141,7 +149,8 @@ export default {
             </li>
           </ul>
 
-          <div class="mt-auto">
+          <div class="mt-auto hstack">
+            <div class="mt-auto" v-if="slot.end <= this.currentDate.getTime()">
             <button
               type="button"
               class="btn btn-sm btn-primary"
@@ -159,25 +168,16 @@ export default {
             >
               <PostSessionFeedback
                 :name="(index / 2 + 1).toString()"
-                @satisfied="
-                  console.log('green');
-                  console.log(index / 2 + 1);
-                  console.log(slot.slot_id);
-                  slotFeedback(slot.slot_id, 0);
-                "
-                @neutral="
-                  console.log('neutral');
-                  console.log(index / 2 + 1);
-                  console.log(slot.slot_id);
-                  slotFeedback(slot.slot_id, 1);
-                "
-                @dissatisfied="
-                  console.log('bad');
-                  console.log(index / 2 + 1);
-                  console.log(slot.slot_id);
-                  slotFeedback(slot.slot_id, 2);
-                "
+                @satisfied="slotFeedback(slot.slot_id, 1);"
+                @neutral="slotFeedback(slot.slot_id, 2);"
+                @dissatisfied="slotFeedback(slot.slot_id, 3);"
               />
+            </div>
+          </div>
+            <div class="ms-auto">
+              <div class="emotions" v-if="slot.feedback == 1"><Satisfied /></div>
+              <div class="emotions" v-if="slot.feedback == 2"><Neutral /></div>
+              <div class="emotions" v-if="slot.feedback == 3"><Dissatisfied /></div>
             </div>
           </div>
         </div>
