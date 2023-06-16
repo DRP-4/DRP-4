@@ -92,6 +92,10 @@ export default {
               theme="snow"
               toolbar="essential"
               content-type="html"
+              :modules="{
+                name: 'Magic URL plugin',
+                module: MagicUrl,
+              }"
             />
           </div>
         </div>

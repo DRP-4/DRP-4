@@ -8,7 +8,7 @@ export interface APITask {
   name: string;
   description: string | null;
   duration: number | null;
-  completed: boolean;
+  complete: boolean;
 }
 
 export class Task {
@@ -36,7 +36,7 @@ export class Task {
         apiTask.description === null ? undefined : apiTask.description,
       duration:
         apiTask.duration === null ? undefined : new Duration(apiTask.duration),
-      complete: apiTask.completed,
+      complete: apiTask.complete,
     });
   }
 }
