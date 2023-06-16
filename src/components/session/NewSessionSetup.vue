@@ -47,7 +47,7 @@ export default {
 
 <template>
   <div class="w-100 h-100 card">
-    <div class="m-auto h-auto card" style="min-width: 75%;">
+    <div class="m-auto h-auto card" style="min-width: 75%">
       <div class="card-header">Create a new session</div>
       <div class="card-body">
         <div class="mb-3">
