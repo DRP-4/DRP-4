@@ -47,7 +47,7 @@ export default {
 
 <template>
   <div class="w-100 h-100 card">
-    <div class="m-auto w-50 h-auto card">
+    <div class="m-auto h-auto card" style="min-width: 75%;">
       <div class="card-header">Create a new session</div>
       <div class="card-body">
         <div class="mb-3">
@@ -66,19 +66,19 @@ export default {
         </div>
         <div class="hstack">
           <button
+            v-if="savedSession"
             type="button"
-            class="btn btn-sm btn-outline-success ms-1"
+            class="btn btn-sm btn-info me-auto"
+            @click="restoreSession"
+          >
+            Restore previous session
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-success"
             @click="createSession"
           >
             Create session
-          </button>
-          <button
-            v-if="savedSession"
-            type="button"
-            class="btn btn-sm btn-success ms-1"
-            @click="restoreSession"
-          >
-            Restore session
           </button>
         </div>
       </div>
