@@ -30,15 +30,30 @@ export default {
 
           <div class="centered">
             <div class="emotions">
-              <div class="face" @click="$emit('satisfied')">
+              <button
+                type="button"
+                class="btn face close"
+                data-bs-dismiss="modal"
+                @click="$emit('satisfied')"
+              >
                 <Satisifed />
-              </div>
-              <div class="face" @click="$emit('neutral')">
+              </button>
+              <button
+                type="button"
+                class="btn face close"
+                data-bs-dismiss="modal"
+                @click="$emit('neutral')"
+              >
                 <Neutral />
-              </div>
-              <div class="face" @click="$emit('dissatisfied')">
+              </button>
+              <button
+                type="button"
+                class="btn face close"
+                data-bs-dismiss="modal"
+                @click="$emit('dissatisfied')"
+              >
                 <Dissatisfied />
-              </div>
+              </button>
             </div>
           </div>
         </div>

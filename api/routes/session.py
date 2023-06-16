@@ -120,9 +120,11 @@ def current_session(user_id):
     slots = list(
         map(
             lambda slot_scalar: {
+                "slot_id": slot_scalar.slot_id,
                 "start_unix": to_unix(slot_scalar.start),
                 "end_unix": to_unix(slot_scalar.end),
                 "is_work": slot_scalar.work,
+                "feedback": slot_scalar.feedback,
                 "completed_tasks": list(
                     map(
                         lambda task_scalar: {

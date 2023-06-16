@@ -12,3 +12,5 @@ class Slot(db.Model):
     work = Column(Boolean, nullable=False)
     start = Column(DateTime, nullable=False)
     end = Column(DateTime, nullable=False)
+    # Feedback for this slot (1=satisfied, 2=neutral, 3=dissatisfied, null=ungiven)
+    feedback = Column(Integer, nullable=True)

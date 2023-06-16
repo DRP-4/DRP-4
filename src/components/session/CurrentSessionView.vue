@@ -1,12 +1,16 @@
 <script lang="ts">
 import { jumpSeconds, resetJumpCounter } from "@/api/debug";
-import { endSession } from "@/api/session";
+import { endSession, giveFeedback } from "@/api/session";
 import { store as timeJumpStore } from "@/stores/time_jump";
 import { store as sessionStore } from "@/stores/session";
 import { store as tasksStore } from "@/stores/tasks";
 import { type Slot } from "@/api/session";
 import TimelineElem from "./TimelineElem.vue";
 import PostSessionFeedback from "@/components/PostSessionFeedback.vue";
+
+import Satisfied from "@/components/icons/SatisfiedFace.vue";
+import Neutral from "@/components/icons/NeutralFace.vue";
+import Dissatisfied from "@/components/icons/DissatisfiedFace.vue";
 
 function dateWithDebugOffset() {
   const thisInstant = new Date();
@@ -20,6 +24,9 @@ export default {
   components: {
     TimelineElem,
     PostSessionFeedback,
+    Satisfied,
+    Neutral,
+    Dissatisfied,
   },
 
   emits: ["done"],
@@ -95,6 +102,11 @@ export default {
       const JUMPING_BY = 900; // 15 minutes
       await jumpSeconds(JUMPING_BY);
     },
+
+    async slotFeedback(slot_id: number, feedback: number) {
+      await giveFeedback(slot_id, feedback);
+      await sessionStore.loadFromDB();
+    },
   },
 };
 </script>
@@ -144,37 +156,39 @@ export default {
             </li>
           </ul>
 
-          <div class="mt-auto">
-            <button
-              type="button"
-              class="btn btn-sm btn-primary"
-              data-bs-toggle="modal"
-              :data-bs-target="'#reviewbutt_' + (index / 2 + 1)"
-            >
-              Review Session {{ index / 2 + 1 }}
-            </button>
-            <div
-              :id="'reviewbutt_' + (index / 2 + 1)"
-              class="modal fade"
-              tabindex="-1"
-              role="dialog"
-              aria-hidden="true"
-            >
-              <PostSessionFeedback
-                :name="(index / 2 + 1).toString()"
-                @satisfied="
-                  console.log('green');
-                  console.log(index / 2 + 1);
-                "
-                @neutral="
-                  console.log('neutral');
-                  console.log(index / 2 + 1);
-                "
-                @dissatisfied="
-                  console.log('bad');
-                  console.log(index / 2 + 1);
-                "
-              />
+          <div class="mt-auto hstack">
+            <div v-if="slot.end <= currentDate" class="mt-auto">
+              <button
+                type="button"
+                class="btn btn-sm btn-primary"
+                data-bs-toggle="modal"
+                :data-bs-target="'#reviewbutt_' + (index / 2 + 1)"
+              >
+                Review Session {{ index / 2 + 1 }}
+              </button>
+              <div
+                :id="'reviewbutt_' + (index / 2 + 1)"
+                class="modal fade"
+                tabindex="-1"
+                role="dialog"
+                aria-hidden="true"
+              >
+                <PostSessionFeedback
+                  :name="(index / 2 + 1).toString()"
+                  @satisfied="slotFeedback(slot.slot_id, 1)"
+                  @neutral="slotFeedback(slot.slot_id, 2)"
+                  @dissatisfied="slotFeedback(slot.slot_id, 3)"
+                />
+              </div>
+            </div>
+            <div class="ms-auto">
+              <div v-if="slot.feedback == 1" class="emotions">
+                <Satisfied />
+              </div>
+              <div v-if="slot.feedback == 2" class="emotions"><Neutral /></div>
+              <div v-if="slot.feedback == 3" class="emotions">
+                <Dissatisfied />
+              </div>
             </div>
           </div>
         </div>
