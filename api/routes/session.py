@@ -20,12 +20,11 @@ def to_unix(date: datetime.datetime):
 
 def do_post_session_cleanup(user_id):
     # delete any sessions that were occuring
-    del_slot = delete(Slot).where(Slot.user_id == user_id)
-    db.session.execute(del_slot)
-
     del_tasks = delete(Task).where(Task.user_id == user_id, Task.completed != None)
     db.session.execute(del_tasks)
 
+    del_slot = delete(Slot).where(Slot.user_id == user_id)
+    db.session.execute(del_slot)
     # don't delete the old session, so we can reuse it's settings
 
 
