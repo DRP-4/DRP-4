@@ -148,6 +148,8 @@ def current_session(user_id):
         )
     )
 
+    slots.sort(key=lambda slot: slot["start_unix"])
+
     return json_response(
         {
             "duration": duration,

@@ -129,10 +129,9 @@ export default {
       </button>
     </div>
     <div class="card-body overflow-y-scroll overflow-x-visible">
-      <!-- TODO: what should the key for the slot be? -->
       <TimelineElem
         v-for="(slot, index) in sessionStore.session?.slots"
-        :key="slot.start.getTime()"
+        :key="slot.slot_id"
         :starting-time="slot.start"
         :is-work="slot.is_work.valueOf()"
         :height="calculateSlotHeight(slot)"
