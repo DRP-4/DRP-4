@@ -150,34 +150,38 @@ export default {
           </ul>
 
           <div class="mt-auto hstack">
-            <div class="mt-auto" v-if="slot.end <= this.currentDate.getTime()">
-            <button
-              type="button"
-              class="btn btn-sm btn-primary"
-              data-bs-toggle="modal"
-              :data-bs-target="'#reviewbutt_' + (index / 2 + 1)"
-            >
-              Review Session {{ index / 2 + 1 }}
-            </button>
-            <div
-              :id="'reviewbutt_' + (index / 2 + 1)"
-              class="modal fade"
-              tabindex="-1"
-              role="dialog"
-              aria-hidden="true"
-            >
-              <PostSessionFeedback
-                :name="(index / 2 + 1).toString()"
-                @satisfied="slotFeedback(slot.slot_id, 1);"
-                @neutral="slotFeedback(slot.slot_id, 2);"
-                @dissatisfied="slotFeedback(slot.slot_id, 3);"
-              />
+            <div class="mt-auto" v-if="slot.end <= currentDate.getTime()">
+              <button
+                type="button"
+                class="btn btn-sm btn-primary"
+                data-bs-toggle="modal"
+                :data-bs-target="'#reviewbutt_' + (index / 2 + 1)"
+              >
+                Review Session {{ index / 2 + 1 }}
+              </button>
+              <div
+                :id="'reviewbutt_' + (index / 2 + 1)"
+                class="modal fade"
+                tabindex="-1"
+                role="dialog"
+                aria-hidden="true"
+              >
+                <PostSessionFeedback
+                  :name="(index / 2 + 1).toString()"
+                  @satisfied="slotFeedback(slot.slot_id, 1)"
+                  @neutral="slotFeedback(slot.slot_id, 2)"
+                  @dissatisfied="slotFeedback(slot.slot_id, 3)"
+                />
+              </div>
             </div>
-          </div>
             <div class="ms-auto">
-              <div class="emotions" v-if="slot.feedback == 1"><Satisfied /></div>
+              <div class="emotions" v-if="slot.feedback == 1">
+                <Satisfied />
+              </div>
               <div class="emotions" v-if="slot.feedback == 2"><Neutral /></div>
-              <div class="emotions" v-if="slot.feedback == 3"><Dissatisfied /></div>
+              <div class="emotions" v-if="slot.feedback == 3">
+                <Dissatisfied />
+              </div>
             </div>
           </div>
         </div>
