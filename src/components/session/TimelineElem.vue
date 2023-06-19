@@ -2,7 +2,7 @@
 export default {
   props: {
     startingTime: {
-      type: Date,
+      type: String,
       required: true,
     },
     height: {
@@ -21,7 +21,7 @@ export default {
 <template>
   <div class="w-100 d-flex flex-column" :style="`height: ${height}em`">
     <div>
-      <small>{{ startingTime.toTimeString().slice(0, 5) }}</small>
+      <small>{{ startingTime }}</small>
     </div>
     <div class="flex-grow-1 hstack">
       <div class="h-100" style="width: 4.375ex">

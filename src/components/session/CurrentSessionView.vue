@@ -132,7 +132,7 @@ export default {
       <TimelineElem
         v-for="(slot, index) in sessionStore.session?.slots"
         :key="slot.slot_id"
-        :starting-time="slot.start"
+        :starting-time="slot.start.toTimeString().slice(0, 5)"
         :is-work="slot.is_work.valueOf()"
         :height="calculateSlotHeight(slot)"
         :completeness="calculateSlotCompleteness(slot.start, slot.end)"
