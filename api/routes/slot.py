@@ -28,7 +28,6 @@ def review_slot(user_id):
         update(Slot)
         .where(Slot.user_id == user_id)
         .where(Slot.slot_id == slot_id)
-        .where(Slot.end <= instant())
         .values(feedback=feedback)
     )
     db.session.execute(new_dur)
