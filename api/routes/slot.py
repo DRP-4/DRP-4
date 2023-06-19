@@ -43,18 +43,20 @@ def review_slot(user_id):
             select(Slot).where(Slot.user_id == user_id).where(Slot.slot_id == slot_id)
         )
         this_slot = db.session.execute(this_slot_q).scalars().first()
-        next_break_q = (
-            select(Slot)
-            .where(Slot.user_id == user_id)
-            .where(Slot.start == this_slot.end)
-        )
-        next_break = db.session.execute(next_break_q).scalars().first()
-        next_work_q = (
-            select(Slot)
-            .where(Slot.user_id == user_id)
-            .where(Slot.start == next_break.end)
-        )
-        next_work = db.session.execute(next_work_q).scalars().first()
+        if this_slot is not None:
+            next_break_q = (
+                select(Slot)
+                .where(Slot.user_id == user_id)
+                .where(Slot.start == this_slot.end)
+            )
+            next_break = db.session.execute(next_break_q).scalars().first()
+        if next_break is not None:
+            next_work_q = (
+                select(Slot)
+                .where(Slot.user_id == user_id)
+                .where(Slot.start == next_break.end)
+            )
+            next_work = db.session.execute(next_work_q).scalars().first()
 
         # satisfied is 1, dissatisfied is 3
         satis_delta = datetime.timedelta(seconds=600)
