@@ -24,6 +24,10 @@ const router = createRouter({
       path: "/demos/session_done",
       component: () => import("../views/SessionDoneDemo.vue"),
     },
+    {
+      path: "/debug/time",
+      component: () => import("../views/TimeControl.vue"),
+    },
   ],
 });
 
