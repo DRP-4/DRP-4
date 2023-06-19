@@ -1,5 +1,7 @@
+import datetime
+
 from flask import request
-from sqlalchemy import update
+from sqlalchemy import update, select
 
 from app import app
 from models import db
@@ -31,6 +33,58 @@ def review_slot(user_id):
         .values(feedback=feedback)
     )
     db.session.execute(new_dur)
+
+    # if the session went badly or well, adjust the break period
+    # add on 5 minutes if reacted poorly, take off 5 mins if good
+    # adjust session after as well
+    if feedback == 1 or feedback == 3:
+        # get this slots end time
+        this_slot_q = (
+            select(Slot).where(Slot.user_id == user_id).where(Slot.slot_id == slot_id)
+        )
+        this_slot = db.session.execute(this_slot_q).scalars().first()
+        next_break_q = (
+            select(Slot)
+            .where(Slot.user_id == user_id)
+            .where(Slot.start == this_slot.end)
+        )
+        next_break = db.session.execute(next_break_q).scalars().first()
+        next_work_q = (
+            select(Slot)
+            .where(Slot.user_id == user_id)
+            .where(Slot.start == next_break.end)
+        )
+        next_work = db.session.execute(next_work_q).scalars().first()
+
+        # satisfied is 1, dissatisfied is 3
+        satis_delta = datetime.timedelta(seconds=600)
+        if next_break is not None:
+            ch_break = (
+                update(Slot)
+                .where(Slot.slot_id == next_break.slot_id)
+                .values(
+                    end=(
+                        (next_break.end - satis_delta)
+                        if (feedback == 1)
+                        else (next_break.end + satis_delta)
+                    )
+                )
+            )
+            db.session.execute(ch_break)
+        if next_work is not None:
+            ch_work = (
+                update(Slot)
+                .where(Slot.slot_id == next_work.slot_id)
+                .values(
+                    start=(
+                        (next_work.start - satis_delta)
+                        if (feedback == 1)
+                        else (next_work.start + satis_delta)
+                    )
+                )
+            )
+            db.session.execute(ch_work)
+
     db.session.commit()
 
     return body
