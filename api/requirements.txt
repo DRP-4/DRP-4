@@ -4,3 +4,5 @@ Flask-SQLAlchemy==3.0.3
 SQLAlchemy-Utils==0.41.1
 Flask-Cors==3.0.10
 psycopg2==2.9.6
+Flask-SocketIO==5.3.4
+simple-websocket==0.10.1

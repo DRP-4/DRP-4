@@ -1,6 +1,10 @@
+import { io } from "socket.io-client";
+
 const API_BASE = import.meta.env.DEV
   ? "http://127.0.0.1:5000"
   : "https://drp-04.herokuapp.com/";
+
+export const socket = io(API_BASE);
 
 function newAPIRequest(route: String): Request {
   // Include credentials for the cookie to be included

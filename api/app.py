@@ -1,5 +1,6 @@
 import flask
 from flask_cors import CORS
+from flask_socketio import SocketIO
 from importlib import import_module
 from os import environ, listdir
 
@@ -26,7 +27,20 @@ app.config["SQLALCHEMY_DATABASE_URI"] = environ["DATABASE_URL"].replace(
 db.init_app(app)
 
 # This let's all origins access the API, which is probably fine for us.
-CORS(app)
+cors = CORS()
+cors.init_app(app)
+
+# Initialize SocketIO
+socketio = SocketIO()
+if running_as_dev:
+    socketio.init_app(app, cors_allowed_origins="*")
+else:
+    socketio.init_app(app)
+
+
+@socketio.on("connect")
+def socketio_connect():
+    pass
 
 
 # Upgrade all HTTP requests to HTTPS

@@ -1,5 +1,4 @@
 <script lang="ts">
-import { jumpSeconds, resetJumpCounter } from "@/api/debug";
 import { endSession, giveFeedback } from "@/api/session";
 import { store as timeJumpStore } from "@/stores/time_jump";
 import { store as sessionStore } from "@/stores/session";
@@ -11,14 +10,6 @@ import PostSessionFeedback from "@/components/PostSessionFeedback.vue";
 import Satisfied from "@/components/icons/SatisfiedFace.vue";
 import Neutral from "@/components/icons/NeutralFace.vue";
 import Dissatisfied from "@/components/icons/DissatisfiedFace.vue";
-
-function dateWithDebugOffset() {
-  const thisInstant = new Date();
-  const thisInstantUnix = thisInstant.getTime();
-  const newInstantUnix = thisInstantUnix + timeJumpStore.deltaInSeconds * 1000;
-  const newInstant = new Date(newInstantUnix);
-  return newInstant;
-}
 
 export default {
   components: {
@@ -33,7 +24,7 @@ export default {
   data() {
     return {
       sessionStore,
-      currentDate: dateWithDebugOffset(),
+      currentDate: timeJumpStore.dateWithDebugOffset(),
       interval: undefined as ReturnType<typeof setInterval> | undefined,
 
       calculateSlotHeight(slot: Slot): number {
@@ -70,14 +61,10 @@ export default {
     };
   },
 
-  async created() {
-    await resetJumpCounter();
-  },
-
   async mounted() {
     await sessionStore.loadFromDB();
     this.interval = setInterval(() => {
-      this.currentDate = dateWithDebugOffset();
+      this.currentDate = timeJumpStore.dateWithDebugOffset();
       if (this.sessionStore.session !== undefined) {
         if (this.currentDate > this.sessionStore.session?.end) {
           endSession();
@@ -98,11 +85,6 @@ export default {
       this.$emit("done");
     },
 
-    async jump() {
-      const JUMPING_BY = 900; // 15 minutes
-      await jumpSeconds(JUMPING_BY);
-    },
-
     async slotFeedback(slot_id: number, feedback: number) {
       await giveFeedback(slot_id, feedback);
       await sessionStore.loadFromDB();
@@ -117,9 +99,6 @@ export default {
       <span class="me-auto"
         >Session (Time is {{ currentDate.toLocaleTimeString("en-GB") }})</span
       >
-      <button type="button" class="btn btn-sm btn-warning me-1" @click="jump">
-        Skip 15 minutes ahead
-      </button>
       <button
         type="button"
         class="btn btn-sm btn-danger ms-1"
