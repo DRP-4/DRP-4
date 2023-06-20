@@ -79,4 +79,4 @@ def review_slot(user_id):
         db.session.execute(ch_work)
 
     db.session.commit()
-    return body
+    return json_response(body)
