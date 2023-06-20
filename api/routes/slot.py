@@ -54,7 +54,7 @@ def review_slot(space_id):
                 Slot.start == slot.end,
                 Slot.space_id == space_id,
                 Slot.work.is_(False),
-                Slot.end >= instant()
+                Slot.end >= instant(),
             )
         )
         .scalars()
@@ -70,7 +70,9 @@ def review_slot(space_id):
     next_work_slot = (
         db.session.execute(
             db.select(Slot).where(
-                Slot.start == next_break_slot.end, Slot.space_id == space_id, Slot.work.is_(True)
+                Slot.start == next_break_slot.end,
+                Slot.space_id == space_id,
+                Slot.work.is_(True),
             )
         )
         .scalars()
