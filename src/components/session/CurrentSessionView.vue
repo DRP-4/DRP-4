@@ -3,6 +3,7 @@ import { endSession, giveFeedback } from "@/api/session";
 import { store as timeJumpStore } from "@/stores/time_jump";
 import { store as sessionStore } from "@/stores/session";
 import { store as tasksStore } from "@/stores/tasks";
+import { store as currentSpaceStore } from "@/stores/current_space";
 import { type Slot } from "@/api/session";
 import TimelineElem from "./TimelineElem.vue";
 import PostSessionFeedback from "@/components/PostSessionFeedback.vue";
@@ -24,6 +25,7 @@ export default {
   data() {
     return {
       sessionStore,
+      currentSpaceStore,
       currentDate: timeJumpStore.dateWithDebugOffset(),
       interval: undefined as ReturnType<typeof setInterval> | undefined,
 
@@ -89,6 +91,10 @@ export default {
       await giveFeedback(slot_id, feedback);
       await sessionStore.loadFromDB();
     },
+
+    async leaveSpace() {
+      await currentSpaceStore.switchTo(undefined);
+    },
   },
 };
 </script>
@@ -96,9 +102,20 @@ export default {
 <template>
   <div class="w-100 h-100 card">
     <div class="card-header hstack">
-      <span class="me-auto"
-        >Session (Time is {{ currentDate.toLocaleTimeString("en-GB") }})</span
+      <span v-if="currentSpaceStore.spaceId !== undefined" class="me-auto"
+        >Shared Session (in
+        <span class="text-muted">{{ currentSpaceStore.displayName }}</span
+        >)</span
       >
+      <span v-else class="me-auto">My Session </span>
+      <button
+        v-if="currentSpaceStore.spaceId !== undefined"
+        type="button"
+        class="btn btn-sm btn-info ms-1"
+        @click="leaveSpace"
+      >
+        Leave space
+      </button>
       <button
         type="button"
         class="btn btn-sm btn-danger ms-1"

@@ -31,7 +31,7 @@ cors = CORS()
 cors.init_app(app)
 
 # Initialize SocketIO
-socketio = SocketIO()
+socketio = SocketIO(logger=True)
 if running_as_dev:
     socketio.init_app(app, cors_allowed_origins="*")
 else:

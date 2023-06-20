@@ -1,8 +1,9 @@
 from app import app, db
-from models.current_session import CurrentSession
-from models.slot import Slot
-from models.task import Task
-
+import models.current_session
+import models.slot
+import models.space
+import models.task
+import models.in_space
 
 with app.app_context():
     db.create_all()

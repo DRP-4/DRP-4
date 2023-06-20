@@ -10,7 +10,7 @@ from models.slot import Slot
 from models.current_session import CurrentSession
 from models.task import Task
 from util.response import json_response
-from util.user_id import with_user_id
+from util.user_space_id import with_space_id
 from util.now import instant
 
 
@@ -18,19 +18,19 @@ def to_unix(date: datetime.datetime):
     return time.mktime(date.timetuple())
 
 
-def do_post_session_cleanup(user_id):
+def do_post_session_cleanup(space_id):
     # delete any sessions that were occuring
-    del_tasks = delete(Task).where(Task.user_id == user_id, Task.completed != None)
+    del_tasks = delete(Task).where(Task.space_id == space_id, Task.completed != None)
     db.session.execute(del_tasks)
 
-    del_slot = delete(Slot).where(Slot.user_id == user_id)
+    del_slot = delete(Slot).where(Slot.space_id == space_id)
     db.session.execute(del_slot)
     # don't delete the old session, so we can reuse it's settings
 
 
 @app.route("/api/session/new", methods=["POST"])
-@with_user_id
-def start_session(user_id):
+@with_space_id
+def start_session(space_id):
     body = request.get_json()
     if "duration" not in body:
         return "Bad Request", 400
@@ -38,16 +38,16 @@ def start_session(user_id):
     if not isinstance(duration, int) or duration < 0:
         return "Bad Request", 400
 
-    do_post_session_cleanup(user_id)
+    do_post_session_cleanup(space_id)
     # delete old session
-    del_sess = delete(CurrentSession).where(CurrentSession.user_id == user_id)
+    del_sess = delete(CurrentSession).where(CurrentSession.space_id == space_id)
     db.session.execute(del_sess)
 
     # add new session to the database
     start = instant()
     end = start + datetime.timedelta(minutes=duration)
 
-    session = CurrentSession(user_id=user_id, start=start, end=end, duration=duration)
+    session = CurrentSession(space_id=space_id, start=start, end=end, duration=duration)
     db.session.add(session)
 
     # slot calculation algorithm
@@ -62,25 +62,24 @@ def start_session(user_id):
         # add a new work/break slot that is upto 45/15 mins long
         slot_end = min(end, curr + (work_slot if working_slot else break_slot))
         db.session.add(
-            Slot(user_id=user_id, work=working_slot, start=curr, end=slot_end)
+            Slot(space_id=space_id, work=working_slot, start=curr, end=slot_end)
         )
         curr = slot_end
         # if we were working, now on break, and vice-versa
         working_slot = not working_slot
 
     db.session.commit()
-
     return json_response(body)
 
 
 @app.route("/api/session/end", methods=["POST"])
-@with_user_id
-def end_session(user_id):
-    do_post_session_cleanup(user_id)
+@with_space_id
+def end_session(space_id):
+    do_post_session_cleanup(space_id)
     # outdate old session - set it's end point to now
     outdate_sess = (
         update(CurrentSession)
-        .where(CurrentSession.user_id == user_id)
+        .where(CurrentSession.space_id == space_id)
         .values(end=datetime.datetime.now())
     )
     db.session.execute(outdate_sess)
@@ -90,11 +89,11 @@ def end_session(user_id):
 
 
 @app.route("/api/session/active", methods=["GET"])
-@with_user_id
-def is_active(user_id):
+@with_space_id
+def is_active(space_id):
     query = (
         db.select(CurrentSession)
-        .filter(CurrentSession.user_id == user_id)
+        .filter(CurrentSession.space_id == space_id)
         .filter(CurrentSession.end > datetime.datetime.now())
     )
     session = db.session.execute(query).scalars().first()
@@ -102,9 +101,9 @@ def is_active(user_id):
 
 
 @app.route("/api/session/current", methods=["GET"])
-@with_user_id
-def current_session(user_id):
-    query = db.select(CurrentSession).filter(CurrentSession.user_id == user_id)
+@with_space_id
+def current_session(space_id):
+    query = db.select(CurrentSession).filter(CurrentSession.space_id == space_id)
     session = db.session.execute(query).scalars().first()
     if session is None:
         return "File Not Found", 404
@@ -113,7 +112,7 @@ def current_session(user_id):
     session_end_unix = to_unix(session.end)
     duration = session.duration
 
-    slots_query = db.select(Slot).filter(Slot.user_id == user_id)
+    slots_query = db.select(Slot).filter(Slot.space_id == space_id)
     slots_scalar = db.session.execute(slots_query).scalars().all()
 
     slots = list(
@@ -135,7 +134,7 @@ def current_session(user_id):
                         },
                         db.session.execute(
                             db.select(Task).filter(
-                                Task.user_id == user_id,
+                                Task.space_id == space_id,
                                 Task.completed == slot_scalar.slot_id,
                             )
                         )

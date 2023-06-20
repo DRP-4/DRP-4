@@ -1,11 +1,13 @@
 <script lang="ts">
 import { Duration } from "@/api/duration";
 import { newSession, getSession } from "@/api/session";
+import { store as currentSpaceStore } from "@/stores/current_space";
 
 export default {
   emits: ["done"],
   data() {
     return {
+      currentSpaceStore,
       duration: "60",
       savedSession: false,
     };
@@ -46,8 +48,13 @@ export default {
 </script>
 
 <template>
-  <div class="h-auto card">
-    <div class="card-header">Create a new session</div>
+  <div class="h-auto w-100 card">
+    <div v-if="currentSpaceStore.spaceId !== undefined" class="card-header">
+      Create a new shared session (in
+      <span class="text-muted">{{ currentSpaceStore.displayName }}</span
+      >)
+    </div>
+    <div v-else class="card-header">Create a new session</div>
     <div class="card-body">
       <div class="mb-3">
         <label for="duration" class="form-label"

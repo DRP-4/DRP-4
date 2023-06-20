@@ -4,7 +4,7 @@ from models import db
 
 
 class CurrentSession(db.Model):
-    user_id = Column(UUIDType(binary=True), primary_key=True)
+    space_id = Column(UUIDType(binary=True), primary_key=True)
     start = Column(DateTime, nullable=False)
     end = Column(DateTime, nullable=False)
     duration = Column(Integer, nullable=False)
