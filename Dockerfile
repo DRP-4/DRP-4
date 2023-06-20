@@ -1,6 +1,6 @@
 FROM alpine:latest
 # Install the (non-python) dependencies
-RUN apk add --no-cache npm python3-dev py3-pip libpq-dev build-base py3-virtualenv
+RUN apk add --no-cache npm python3-dev py3-pip py3-virtualenv
 # Setup the user `npc` for the server
 RUN adduser -D npc
 USER npc
