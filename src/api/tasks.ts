@@ -83,5 +83,5 @@ export async function updateTask(update: TaskUpdate) {
 
 // delete a task given its id
 export async function deleteTask(id: TaskID) {
-  return del("task/delete", { id });
+  return await del("task/delete", { id });
 }

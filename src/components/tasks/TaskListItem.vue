@@ -65,7 +65,7 @@ export default {
 </script>
 
 <template>
-  <div class="card">
+  <div class="card appear">
     <!-- Card header (task name, delete button) -->
     <div class="card-header hstack">
       <div v-if="inSession" class="form-check">
@@ -170,5 +170,9 @@ export default {
 
   width: 100%;
   height: 100%;
+}
+
+.appear {
+  animation: appearance 0.1s ease-out forwards;
 }
 </style>

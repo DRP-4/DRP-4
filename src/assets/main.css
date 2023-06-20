@@ -20,3 +20,18 @@ a,
 .ql-tooltip {
   z-index: 100;
 }
+
+@media (prefers-reduced-motion) {
+  .appear {
+    animation: unset;
+  }
+}
+
+@keyframes appearance {
+  0% {
+    transform: scale(1, 0.5);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}

@@ -4,16 +4,16 @@ from models import db
 from models.task import Task
 from models.slot import Slot
 from util.response import json_response
-from util.user_id import with_user_id
+from util.user_space_id import with_space_id
 from util.now import instant
 from flask import request, abort
 from sqlalchemy import update
 
 
 @app.route("/api/task/get-all", methods=["GET"])
-@with_user_id
-def get_tasks(user_id):
-    query = db.select(Task).filter(Task.user_id == user_id).order_by(Task.created)
+@with_space_id
+def get_tasks(space_id):
+    query = db.select(Task).filter(Task.space_id == space_id).order_by(Task.created)
     tasks = db.session.execute(query).scalars().all()
     return json_response(
         [
@@ -30,8 +30,8 @@ def get_tasks(user_id):
 
 
 @app.route("/api/task/create", methods=["POST"])
-@with_user_id
-def create_task(user_id):
+@with_space_id
+def create_task(space_id):
     body = request.get_json()
 
     if "name" not in body:
@@ -53,7 +53,10 @@ def create_task(user_id):
             return "Bad Request", 400
 
     task = Task(
-        user_id=user_id, title=name, duration_minutes=duration, description=description
+        space_id=space_id,
+        title=name,
+        duration_minutes=duration,
+        description=description,
     )
     db.session.add(task)
     db.session.commit()
@@ -62,8 +65,8 @@ def create_task(user_id):
 
 
 @app.route("/api/task/update", methods=["PUT"])
-@with_user_id
-def update_task(user_id):
+@with_space_id
+def update_task(space_id):
     # body has id and possibly new values for all task params
     body = request.get_json()
 
@@ -106,7 +109,7 @@ def update_task(user_id):
             now = instant()
             past_slots = (
                 db.select(Slot)
-                .filter(Slot.user_id == user_id, Slot.start <= now, Slot.work)
+                .filter(Slot.space_id == space_id, Slot.start <= now, Slot.work)
                 .order_by(Slot.start.desc())
             )
             latest_slot = db.session.execute(past_slots).scalars().first()
@@ -117,7 +120,7 @@ def update_task(user_id):
         # make sure to still verify user id, so users can't modify others tasks
         stmt = (
             update(Task)
-            .where(Task.user_id == user_id, Task.task_id == task_id)
+            .where(Task.space_id == space_id, Task.task_id == task_id)
             .values(**prop_updates)
         )
         db.session.execute(stmt)
@@ -127,14 +130,19 @@ def update_task(user_id):
 
 
 @app.route("/api/task/delete", methods=["DELETE"])
-@with_user_id
-def delete_task(user_id):
+@with_space_id
+def delete_task(space_id):
     # body has task id
     body = request.get_json()
 
+    if "id" not in body or not isinstance(body["id"], int):
+        return "Bad Request", 400
+
+    id = body["id"]
+
     task = (
         db.session.query(Task)
-        .where(Task.user_id == user_id, Task.task_id == body["id"])
+        .where(Task.space_id == space_id, Task.task_id == id)
         .one()
     )
     if task is None:

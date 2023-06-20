@@ -1,11 +1,32 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 
-// See here how to get started:
-// https://playwright.dev/docs/intro
-test("visits the app root url", async ({ page }) => {
+test("creates a new task", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator("input[type=text]")).toHaveAttribute(
-    "placeholder",
-    "Task name (required)"
-  );
+
+  await page.getByRole("button", { name: "Add new task" }).click();
+  await page.getByPlaceholder("Task name (required)").click();
+  await page.getByPlaceholder("Task name (required)").fill("Add new task");
+  await page.getByLabel("Add description (optional)").check();
+  await page.locator(".ql-editor").click();
+  await page.locator(".ql-editor").fill("Add description");
+  await page
+    .getByRole("dialog", { name: "Add new task" })
+    .getByRole("button", { name: "Add new task" })
+    .click();
+});
+
+test("creates a new session", async ({ page }) => {
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "Create session" }).click();
+});
+
+test("creates a new space", async ({ page }) => {
+  await page.goto("/");
+
+  await page.getByPlaceholder("Display name").click();
+  await page.getByPlaceholder("Display name").fill("");
+  await page.locator(".input-group").click();
+  await page.getByPlaceholder("Display name").fill("DRP-04");
+  await page.getByRole("button", { name: "Create", exact: true }).click();
 });

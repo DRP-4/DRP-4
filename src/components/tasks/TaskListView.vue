@@ -5,23 +5,19 @@ import MagicUrl from "quill-magic-url";
 import { type TaskID } from "@/api/tasks";
 import { store as sessionStore } from "@/stores/session";
 import { store as tasksStore } from "@/stores/tasks";
+import { store as currentSpaceStore } from "@/stores/current_space";
 
 export default {
   components: {
     TaskListItem,
     NewTaskSetup,
   },
-  props: {
-    inSession: {
-      type: Boolean,
-      required: true,
-    },
-  },
 
   data() {
     return {
       selectedId: undefined,
       tasksStore,
+      currentSpaceStore,
       MagicUrl,
     };
   },
@@ -44,7 +40,9 @@ export default {
   methods: {
     async remove(id: TaskID) {
       await tasksStore.remove(id);
-      await sessionStore.loadFromDB();
+      if (currentSpaceStore.inSession) {
+        await sessionStore.loadFromDB();
+      }
     },
   },
 };
@@ -53,7 +51,12 @@ export default {
 <template>
   <div class="card h-100 w-100">
     <div class="card-header hstack">
-      <span class="me-auto">Tasks</span>
+      <span v-if="currentSpaceStore.displayName" class="me-auto"
+        >Shared Tasks (in
+        <span class="text-muted">{{ currentSpaceStore.displayName }}</span
+        >)</span
+      >
+      <span v-else class="me-auto">My Tasks</span>
 
       <!-- Add new task modal -->
       <button
@@ -77,15 +80,15 @@ export default {
       </div>
     </div>
 
-    <div class="card-body overflow-y-scroll overflow-x-visible">
+    <div class="card-body overflow-y-auto overflow-x-visible">
       <div
         v-for="task in tasksStore.sortedTasksList()"
-        :key="task.id"
+        :key="`${task.id}-${currentSpaceStore.spaceId}-${task.complete}-${task.name}`"
         class="p-2"
       >
         <TaskListItem
           :task="task"
-          :in-session="inSession"
+          :in-session="currentSpaceStore.inSession"
           @task:update="(newTask) => tasksStore.update(newTask)"
           @delete="remove(task.id)"
         />
