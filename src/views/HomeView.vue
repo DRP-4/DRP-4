@@ -42,7 +42,11 @@ export default {
     </div>
     <div class="h-100 w-50 ms-3">
       <CurrentSessionView v-if="inSession" @done="endSession" />
-      <NewSessionSetup v-else @done="beginSession" />
+      <div v-else class="card w-100 h-100 d-flex">
+        <div class="m-auto">
+          <NewSessionSetup @done="beginSession" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
