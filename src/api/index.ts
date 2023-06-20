@@ -3,7 +3,7 @@ import { store as currentSpaceStore } from "@/stores/current_space";
 
 const API_BASE = import.meta.env.DEV
   ? "http://127.0.0.1:5000"
-  : "https://drp-04.herokuapp.com/";
+  : "https://drp-04.herokuapp.com";
 
 export const socket = io(API_BASE, { withCredentials: true });
 export const spidSocket = io(`${API_BASE}/spid`, { withCredentials: true });
