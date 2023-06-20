@@ -118,6 +118,7 @@ def new_space(user_id):
     space_id = new_space_id()
 
     db.session.add(Space(space_id=space_id, display_name=display_name))
+    db.session.commit()
     db.session.add(InSpace(user_id=user_id, space_id=space_id, is_owner=True))
     db.session.commit()
     return json_response({"id": encode_space_id(space_id)})
