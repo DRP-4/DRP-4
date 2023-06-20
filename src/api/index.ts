@@ -6,7 +6,10 @@ const API_BASE = import.meta.env.DEV
   : "https://drp-04.herokuapp.com/";
 
 export const socket = io(API_BASE, { withCredentials: true });
-export const spidSocket = io(API_BASE + "/spid", { withCredentials: true });
+export const spidSocket = io(`${API_BASE}/spid`, { withCredentials: true });
+export const spidGoneSocket = io(`${API_BASE}/spid/gone`, {
+  withCredentials: true,
+});
 
 function newAPIRequest(route: String): Request {
   const url = new URL(`${API_BASE}/api/${route}`);
@@ -16,7 +19,11 @@ function newAPIRequest(route: String): Request {
   return new Request(url, { credentials: "include" });
 }
 
-spidSocket.on("space-update", async () => {
+spidSocket.on("space-update", async (body) => {
+  if (body.id != currentSpaceStore.spaceId) {
+    // Wrong space identifier
+    return;
+  }
   await currentSpaceStore.fullOnReload();
 });
 

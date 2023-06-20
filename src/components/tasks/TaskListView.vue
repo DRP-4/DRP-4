@@ -83,7 +83,7 @@ export default {
     <div class="card-body overflow-y-auto overflow-x-visible">
       <div
         v-for="task in tasksStore.sortedTasksList()"
-        :key="task.id + String(currentSpaceStore.spaceId)"
+        :key="`${task.id}-${currentSpaceStore.spaceId}-${task.complete}-${task.name}`"
         class="p-2"
       >
         <TaskListItem

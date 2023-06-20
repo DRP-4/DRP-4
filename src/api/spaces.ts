@@ -5,19 +5,22 @@ export type SpaceID = string;
 export interface APISpace {
   id: SpaceID;
   display_name: string;
+  owned: boolean;
 }
 
 export class Space {
   id: SpaceID;
   displayName: string;
+  isOwned: boolean;
 
-  public constructor(id: SpaceID, displayName: string) {
+  public constructor(id: SpaceID, displayName: string, isOwned: boolean) {
     this.id = id;
     this.displayName = displayName;
+    this.isOwned = isOwned;
   }
 
   public static parseFromAPI(apiSpace: APISpace): Space {
-    return new Space(apiSpace.id, apiSpace.display_name);
+    return new Space(apiSpace.id, apiSpace.display_name, apiSpace.owned);
   }
 }
 
@@ -46,4 +49,8 @@ export async function deleteSpace(id: SpaceID) {
 
 export async function joinSpace(id: SpaceID) {
   return await put("space/join", { id });
+}
+
+export async function leaveSpace(id: SpaceID) {
+  return await put("space/leave", { id });
 }

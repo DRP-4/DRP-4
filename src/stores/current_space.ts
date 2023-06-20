@@ -34,6 +34,10 @@ export const store = reactive({
   },
 
   async switchTo(spaceId: SpaceID | undefined) {
+    if (spaceId == this.spaceId) {
+      return;
+    }
+
     spidSocket.emit("space-move", { spid: spaceId });
     this.spaceId = spaceId;
 

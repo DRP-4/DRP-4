@@ -19,9 +19,13 @@ export default {
       type: Boolean,
       required: true,
     },
+    isOwner: {
+      type: Boolean,
+      required: true,
+    },
   },
 
-  emits: ["switch", "del"],
+  emits: ["switch", "del", "leave"],
 
   methods: {
     copy() {
@@ -41,18 +45,25 @@ export default {
         ><small>#{{ id }}</small></span
       >
       <div class="btn-group flex-shrink-0">
-        <button class="btn btn-sm btn-light flex-shrink-0" @click="copy">
-          Copy invite
-        </button>
+        <button class="btn btn-sm btn-light" @click="copy">Copy invite</button>
         <button
           v-if="!selected"
-          class="btn btn-sm btn-light flex-shrink-0"
+          class="btn btn-sm btn-light"
           @click="$emit('switch')"
         >
           Switch to
         </button>
+        <button
+          v-if="isOwner"
+          class="btn btn-sm btn-danger"
+          @click="$emit('del')"
+        >
+          Delete
+        </button>
+        <button v-else class="btn btn-sm btn-danger" @click="$emit('leave')">
+          Leave
+        </button>
       </div>
-      <button class="btn btn-close ms-2 flex-shrink-0" @click="$emit('del')" />
     </div>
   </li>
 </template>

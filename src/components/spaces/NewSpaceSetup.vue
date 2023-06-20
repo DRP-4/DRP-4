@@ -11,6 +11,7 @@ export default {
   methods: {
     add() {
       spacesStore.add(this.displayName);
+      this.displayName = "";
     },
   },
 };

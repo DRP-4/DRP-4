@@ -46,8 +46,10 @@ export default {
           :id="space.id"
           :key="space.id"
           :name="space.displayName"
+          :is-owner="space.isOwned"
           :selected="currentSpaceStore.spaceId === space.id"
-          @del="spacesStore.remove(space.id)"
+          @del="spacesStore.remove(space.id, 'del')"
+          @leave="spacesStore.remove(space.id, 'leave')"
           @switch="currentSpaceStore.switchTo(space.id)"
         />
       </ul>

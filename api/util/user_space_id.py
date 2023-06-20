@@ -117,6 +117,7 @@ def with_space_id(func):
 
             socketio.emit(
                 "space-update",
+                {"id": args["spid"]},
                 to=args["spid"],
                 namespace="/spid",
                 skip_sid=excluded_sids,
