@@ -12,6 +12,7 @@ from models.task import Task
 from util.response import json_response
 from util.user_space_id import with_space_id
 from util.now import instant
+import util.times as times
 
 
 def to_unix(date: datetime.datetime):
@@ -54,9 +55,8 @@ def start_session(space_id):
     # for now, just add 45-min slots followed by 15-min breaks
     # TODO: add only the first, then dynamically calculate as time goes one
     curr = start
-    minute = datetime.timedelta(seconds=60)
-    work_slot = 45 * minute
-    break_slot = 15 * minute
+    work_slot = datetime.timedelta(minutes=times.WORK_SLOT_MINS)
+    break_slot = datetime.timedelta(minutes=times.BREAK_SLOT_MINS)
     working_slot = True
     while curr != end:
         # add a new work/break slot that is upto 45/15 mins long

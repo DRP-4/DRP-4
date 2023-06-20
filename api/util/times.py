@@ -1,0 +1,3 @@
+BREAK_SLOT_MINS = 15
+WORK_SLOT_MINS = 45
+BREAK_LENGHTS_MINS = [BREAK_SLOT_MINS + delta for delta in [-5, 0, 5]]
